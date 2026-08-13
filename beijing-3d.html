@@ -11,89 +11,85 @@
     padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-size:13.5px;gap:12px}
   .hud b{color:#7cc6ff;font-size:15px}
   .hud span{color:#9fb0cc}
+  #status{position:fixed;inset:0;z-index:15;display:grid;place-items:center;background:#0f1b2d;
+    color:#cbd5e1;font-size:15px;text-align:center;padding:20px}
+  #status small{color:#7c8aa5}
 </style>
-<script>window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/';</script>
-<script src="https://cdn.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/Cesium.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<script>window.CESIUM_BASE_URL='https://fastly.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/';</script>
+<script src="https://fastly.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/Cesium.js"></script>
+<link href="https://fastly.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 </head>
 <body>
 <div class="hud">
   <div><b>姝言智图</b> · 园区三维一张图 Demo（Cesium 3D）</div>
   <span>底图 OSM（公开）｜ 行政区划 DataV（公开）｜ 无需 token</span>
 </div>
+<div id="status">正在加载三维地图引擎…<br><small>（需联网加载 Cesium 与地图数据；若长时间空白，可能是 CDN 被网络拦截）</small></div>
 <div id="cesiumContainer"></div>
 
 <script>
-  // 无需 Cesium ion token：使用 OSM 公开影像
-  const viewer = new Cesium.Viewer('cesiumContainer', {
-    baseLayerPicker: false,
-    geocoder: false,
-    homeButton: false,
-    sceneModePicker: false,
-    navigationHelpButton: false,
-    animation: false,
-    timeline: false,
-    fullscreenButton: true,
-    imageryProvider: new Cesium.OpenStreetMapImageryProvider({ url: 'https://tile.openstreetmap.org/' })
-  });
-  viewer.cesiumWidget.creditContainer.style.display = 'none';
+function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
+  s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
+window.addEventListener('load', function(){
+  if (typeof Cesium === 'undefined') {
+    showError('⚠ 三维地图引擎（Cesium）加载失败。<br>通常是网络无法访问 CDN（fastly.jsdelivr.net）。<br>解决：换用国内可访问网络，或将 Cesium 自托管到国内服务器 / 对象存储。');
+    return;
+  }
+  try { initCesium(); } catch(e){ showError('初始化失败：' + (e && e.message ? e.message : e)); }
+});
 
-  // 飞到北京，倾斜视角看 3D
+function initCesium(){
+  var viewer = new Cesium.Viewer('cesiumContainer', {
+    baseLayerPicker:false, geocoder:false, homeButton:false, sceneModePicker:false,
+    navigationHelpButton:false, animation:false, timeline:false, fullscreenButton:true,
+    imageryProvider: new Cesium.OpenStreetMapImageryProvider({ url:'https://tile.openstreetmap.org/' }),
+    // 即使底图瓦片加载失败，也保留一个可见的地球底色
+    globe: new Cesium.Globe(Cesium.Color.fromCssColorString('#0b1f3a'))
+  });
+  viewer.cesiumWidget.creditContainer.style.display='none';
+
   viewer.camera.flyTo({
     destination: Cesium.Cartesian3.fromDegrees(116.40, 39.92, 90000),
-    orientation: { heading: Cesium.Math.toRadians(0), pitch: Cesium.Math.toRadians(-35), roll: 0 },
-    duration: 2
+    orientation:{ heading:Cesium.Math.toRadians(0), pitch:Cesium.Math.toRadians(-35), roll:0 },
+    duration:2
   });
 
-  // 加载北京行政区划，拉伸为 3D 街区
-  const palette = ['#2563eb','#06b6d4','#7c3aed','#0ea5e9','#14b8a6','#6366f1','#0891b2','#3b82f6'];
+  var palette=['#2563eb','#06b6d4','#7c3aed','#0ea5e9','#14b8a6','#6366f1','#0891b2','#3b82f6'];
   fetch('https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json')
-    .then(r => r.json())
-    .then(geo => {
-      let i = 0;
-      geo.features.forEach(f => {
-        const name = (f.properties && f.properties.name) || ('区域' + i);
-        const h = 3000 + (i * 700) % 9000;
-        const color = Cesium.Color.fromCssColorString(palette[i % palette.length]).withAlpha(0.6);
-        Cesium.GeoJsonDataSource.load(
-          { type: 'FeatureCollection', features: [f] },
-          { stroke: Cesium.Color.WHITE, fill: color, strokeWidth: 1, extrudedHeight: h, clampToGround: false }
-        ).then(ds => {
+    .then(function(r){return r.json();})
+    .then(function(geo){
+      var i=0;
+      geo.features.forEach(function(f){
+        var name=(f.properties&&f.properties.name)||('区域'+i);
+        var h=3000+(i*700)%9000;
+        var color=Cesium.Color.fromCssColorString(palette[i%palette.length]).withAlpha(0.6);
+        Cesium.GeoJsonDataSource.load({type:'FeatureCollection',features:[f]},
+          {stroke:Cesium.Color.WHITE,fill:color,strokeWidth:1,extrudedHeight:h,clampToGround:false})
+        .then(function(ds){
           viewer.dataSources.add(ds);
-          ds.entities.values.forEach(en => {
-            if (en.polygon) {
-              en.polygon.extrudedHeight = h;
-              en.polygon.height = 0;
-              en.name = name;
-              en.label = new Cesium.LabelGraphics({
-                text: name, font: '13px sans-serif', fillColor: Cesium.Color.WHITE,
-                style: Cesium.LabelStyle.FILL_AND_OUTLINE, outlineWidth: 2,
-                verticalOrigin: Cesium.VerticalOrigin.BOTTOM, pixelOffset: new Cesium.Cartesian2(0, -8),
-                disableDepthTestDistance: Number.POSITIVE_INFINITY
-              });
-            }
+          ds.entities.values.forEach(function(en){
+            if(en.polygon){ en.polygon.extrudedHeight=h; en.polygon.height=0; en.name=name;
+              en.label=new Cesium.LabelGraphics({text:name,font:'13px sans-serif',fillColor:Cesium.Color.WHITE,
+                style:Cesium.LabelStyle.FILL_AND_OUTLINE,outlineWidth:2,verticalOrigin:Cesium.VerticalOrigin.BOTTOM,
+                pixelOffset:new Cesium.Cartesian2(0,-8),disableDepthTestDistance:Number.POSITIVE_INFINITY}); }
           });
         });
         i++;
       });
+      document.getElementById('status').style.display='none';
     })
-    .catch(e => console.error('GeoJSON 加载失败', e));
+    .catch(function(e){ document.getElementById('status').style.display='none';
+      console.error('GeoJSON 加载失败', e); });
 
-  // 演示用标记点（园区 / 应急 / 能源）
-  [
-    { name: '示范园区 A', lon: 116.39, lat: 39.91 },
-    { name: '应急指挥点 B', lon: 116.45, lat: 39.95 },
-    { name: '能源站 C', lon: 116.33, lat: 39.88 }
-  ].forEach(m => {
-    viewer.entities.add({
-      position: Cesium.Cartesian3.fromDegrees(m.lon, m.lat, 12000),
-      point: { pixelSize: 12, color: Cesium.Color.fromCssColorString('#f59e0b'),
-        outlineColor: Cesium.Color.WHITE, outlineWidth: 2 },
-      label: { text: m.name, font: '13px sans-serif', fillColor: Cesium.Color.WHITE,
-        showBackground: true, backgroundColor: Cesium.Color.fromCssColorString('#0f1b2d').withAlpha(0.7),
-        pixelOffset: new Cesium.Cartesian2(0, -22), disableDepthTestDistance: Number.POSITIVE_INFINITY }
-    });
+  [ {name:'示范园区 A',lon:116.39,lat:39.91},{name:'应急指挥点 B',lon:116.45,lat:39.95},{name:'能源站 C',lon:116.33,lat:39.88} ]
+  .forEach(function(m){
+    viewer.entities.add({ position:Cesium.Cartesian3.fromDegrees(m.lon,m.lat,12000),
+      point:{pixelSize:12,color:Cesium.Color.fromCssColorString('#f59e0b'),outlineColor:Cesium.Color.WHITE,outlineWidth:2},
+      label:{text:m.name,font:'13px sans-serif',fillColor:Cesium.Color.WHITE,showBackground:true,
+        backgroundColor:Cesium.Color.fromCssColorString('#0f1b2d').withAlpha(0.7),
+        pixelOffset:new Cesium.Cartesian2(0,-22),disableDepthTestDistance:Number.POSITIVE_INFINITY} });
   });
+}
 </script>
 </body>
 </html>
