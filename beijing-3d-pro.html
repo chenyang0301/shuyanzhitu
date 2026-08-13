@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>姝言智图 · 园区三维一张图 Demo（真实建筑白模 · Cesium ion）</title>
+<style>
+  html,body,#cesiumContainer{width:100%;height:100%;margin:0;padding:0;overflow:hidden;
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .hud{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(15,27,45,.86);color:#fff;
+    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-size:13.5px;gap:12px}
+  .hud b{color:#7cc6ff;font-size:15px}
+  .hud span{color:#f59e0b}
+</style>
+<script>window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/';</script>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/Cesium.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+<body>
+<div class="hud">
+  <div><b>姝言智图</b> · 园区三维一张图 Demo（真实建筑白模）</div>
+  <span id="hint">需填入 Cesium ion 免费 token</span>
+</div>
+<div id="cesiumContainer"></div>
+
+<script>
+  // 👇 在此粘贴你的 Cesium ion 免费 token（https://ion.cesium.com 注册即得）
+  const ION_TOKEN = '';
+
+  if (!ION_TOKEN) {
+    document.getElementById('hint').textContent = '⚠ 请先在源码顶部 const ION_TOKEN 处填入你的 token';
+  }
+  Cesium.Ion.defaultAccessToken = ION_TOKEN;
+
+  // 无 token 时用 OSM 公开影像兜底，保证页面不空白
+  const baseLayerOpt = ION_TOKEN ? {} : {
+    baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+      Promise.resolve(new Cesium.OpenStreetMapImageryProvider({ url: 'https://tile.openstreetmap.org/' }))
+    )
+  };
+
+  (async () => {
+    const viewer = new Cesium.Viewer('cesiumContainer', Object.assign({
+      baseLayerPicker: false, geocoder: false, homeButton: false, sceneModePicker: false,
+      navigationHelpButton: false, animation: false, timeline: false, fullscreenButton: true
+    }, baseLayerOpt));
+    viewer.cesiumWidget.creditContainer.style.display = 'none';
+
+    // 真实地形（需 token）
+    if (ION_TOKEN) {
+      try { await viewer.scene.setTerrain(Cesium.Terrain.fromWorldTerrain()); } catch (e) { console.warn('地形加载失败', e); }
+      // 真实建筑白模 OSM Buildings（需 token）
+      try {
+        const buildings = await Cesium.createOsmBuildingsAsync();
+        viewer.scene.primitives.add(buildings);
+        document.getElementById('hint').textContent = '已加载真实地形 + OSM 建筑白模';
+      } catch (e) { console.warn('建筑白模加载失败（检查 token）', e); }
+    }
+
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(116.40, 39.92, 60000),
+      orientation: { heading: Cesium.Math.toRadians(0), pitch: Cesium.Math.toRadians(-30), roll: 0 },
+      duration: 2
+    });
+
+    [
+      { name: '示范园区 A', lon: 116.39, lat: 39.91 },
+      { name: '应急指挥点 B', lon: 116.45, lat: 39.95 },
+      { name: '能源站 C', lon: 116.33, lat: 39.88 }
+    ].forEach(m => {
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(m.lon, m.lat, 800),
+        point: { pixelSize: 12, color: Cesium.Color.fromCssColorString('#f59e0b'),
+          outlineColor: Cesium.Color.WHITE, outlineWidth: 2 },
+        label: { text: m.name, font: '13px sans-serif', fillColor: Cesium.Color.WHITE,
+          showBackground: true, backgroundColor: Cesium.Color.fromCssColorString('#0f1b2d').withAlpha(0.7),
+          pixelOffset: new Cesium.Cartesian2(0, -22), disableDepthTestDistance: Number.POSITIVE_INFINITY }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
