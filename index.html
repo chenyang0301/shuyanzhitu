@@ -4,12 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>北京姝言智图科技有限公司 · 国产 GPU 适配三维可视化</title>
-<meta name="description" content="姝言智图 · 帮政企客户把三维地理信息 / 数字孪生系统跑在国产显卡上、看得见、用得稳。国产 GPU 适配 · 三维大屏 · 数字孪生。" />
+<meta name="description" content="姝言智图 · 帮政企客户把三维地理信息 / 数字孪生系统跑在国产显卡上、看得见、用得稳。国产 GPU 适配 · 三维大屏 · 数字孪生 · 智慧园区 / 应急 / 能源。" />
 <style>
   :root{
     --bg:#f7f9fc; --bg-soft:#eef3fb; --ink:#0f1b2d; --muted:#5b6b82;
     --brand:#2563eb; --brand2:#06b6d4; --line:#e3e9f2; --card:#ffffff;
     --radius:16px; --shadow:0 10px 30px rgba(20,40,80,.08);
+    --ok:#0f9d6b; --warn:#d9920a; --plan:#6b78ff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -19,41 +20,48 @@
   .wrap{width:min(1120px,92vw);margin:0 auto}
   .btn{display:inline-block;padding:12px 22px;border-radius:999px;font-weight:600;font-size:15px;
     background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;box-shadow:var(--shadow);
-    transition:transform .15s ease,box-shadow .15s ease}
+    transition:transform .15s ease,box-shadow .15s ease;cursor:pointer;border:0}
   .btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(37,99,235,.28)}
   .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line);box-shadow:none}
+  .btn.lg{padding:15px 30px;font-size:16px}
 
   /* NAV */
-  header{position:sticky;top:0;z-index:50;background:rgba(247,249,252,.85);backdrop-filter:blur(10px);
+  header{position:sticky;top:0;z-index:50;background:rgba(247,249,252,.88);backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line)}
   nav{display:flex;align-items:center;justify-content:space-between;height:64px}
   .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.5px}
   .logo .dot{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));
     display:grid;place-items:center;color:#fff;font-size:14px}
-  .nav-links{display:flex;gap:26px;font-size:15px;color:var(--muted);font-weight:500}
+  .nav-links{display:flex;gap:20px;font-size:15px;color:var(--muted);font-weight:500;flex-wrap:wrap}
   .nav-links a:hover{color:var(--brand)}
   .menu-btn{display:none;font-size:22px;background:none;border:0;cursor:pointer;color:var(--ink)}
 
   /* HERO */
-  .hero{position:relative;padding:84px 0 70px;background:
+  .hero{position:relative;padding:80px 0 40px;background:
     radial-gradient(900px 420px at 85% -10%,rgba(6,182,212,.18),transparent 60%),
     radial-gradient(700px 360px at 5% 10%,rgba(37,99,235,.16),transparent 55%);}
   .hero h1{font-size:clamp(30px,5vw,50px);line-height:1.2;font-weight:800;letter-spacing:.5px}
   .hero h1 .hl{background:linear-gradient(120deg,var(--brand),var(--brand2));-webkit-background-clip:text;
     background-clip:text;color:transparent}
-  .hero p.lead{margin-top:18px;font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:640px}
-  .hero .cta{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap}
-  .badges{margin-top:34px;display:flex;gap:10px;flex-wrap:wrap}
+  .hero p.lead{margin-top:18px;font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:660px}
+  .hero .cta{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
+  .badges{margin-top:32px;display:flex;gap:10px;flex-wrap:wrap}
   .badge{font-size:13px;color:var(--brand);background:#eaf1ff;border:1px solid #d7e4ff;padding:6px 12px;border-radius:999px}
 
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:34px 0 0}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 14px;text-align:center;box-shadow:var(--shadow)}
+  .stat .n{font-size:30px;font-weight:800;background:linear-gradient(120deg,var(--brand),var(--brand2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .t{font-size:13px;color:var(--muted);margin-top:4px}
+
   /* SECTION */
-  section{padding:72px 0}
-  .sec-head{text-align:center;max-width:680px;margin:0 auto 44px}
+  section{padding:64px 0}
+  .sec-head{text-align:center;max-width:700px;margin:0 auto 40px}
   .sec-head .tag{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--brand);text-transform:uppercase}
   .sec-head h2{font-size:clamp(24px,3.6vw,34px);margin-top:8px;font-weight:800}
   .sec-head p{margin-top:12px;color:var(--muted)}
 
-  /* CARDS */
   .grid{display:grid;gap:20px}
   .g3{grid-template-columns:repeat(3,1fr)}
   .g4{grid-template-columns:repeat(4,1fr)}
@@ -66,11 +74,37 @@
   .card h3{font-size:18px;font-weight:700}
   .card p{margin-top:8px;color:var(--muted);font-size:14.5px}
   .price{margin-top:14px;font-weight:700;color:var(--brand);font-size:15px}
-  .num{position:absolute}
 
   /* PAIN */
   .pain{background:var(--bg-soft)}
   .pain .card h3{color:#b4232a}
+
+  /* SOLUTIONS */
+  .sol .card{padding:28px}
+  .sol .card h3{display:flex;align-items:center;gap:10px}
+  .sol .tagline{font-size:13px;color:var(--brand);font-weight:700;margin-top:10px}
+  .sol ul{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+  .sol ul li{margin:6px 0}
+
+  /* MATRIX table */
+  .matrix{background:var(--bg-soft)}
+  .tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .tbl th,.tbl td{padding:13px 16px;text-align:left;font-size:14.5px;border-bottom:1px solid var(--line)}
+  .tbl th{background:#0f1b2d;color:#fff;font-weight:600}
+  .tbl tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:700}
+  .pill.ok{background:#e6f7f0;color:var(--ok)}
+  .pill.warn{background:#fdf3e2;color:var(--warn)}
+  .pill.plan{background:#eef0ff;color:var(--plan)}
+
+  /* PROCESS */
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:s}
+  .step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 16px;position:relative;box-shadow:var(--shadow)}
+  .step .num{width:34px;height:34px;border-radius:50%;background:linear-gradient(120deg,var(--brand),var(--brand2));
+    color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:12px}
+  .step h4{font-size:16px;font-weight:700;margin-bottom:6px}
+  .step p{font-size:13px;color:var(--muted)}
 
   /* TECH */
   .tech{background:linear-gradient(180deg,#0f1b2d,#13243f);color:#eaf1ff}
@@ -88,12 +122,27 @@
   .demo-frame{margin:0 auto 36px;max-width:1000px}
   .demo-frame iframe{width:100%;height:480px;border:1px solid var(--line);
     border-radius:var(--radius);box-shadow:var(--shadow);background:#0f1b2d}
+  .sample .card .ic{background:linear-gradient(135deg,#e6fbff,#eaf1ff)}
 
-  /* ABOUT */
-  .about{background:var(--bg-soft)}
-  .about .card{display:flex;flex-direction:column;gap:6px}
-  .about .big{font-size:30px;font-weight:800;background:linear-gradient(120deg,var(--brand),var(--brand2));
+  /* CREDENTIALS */
+  .cred{background:var(--bg-soft)}
+  .cred .card{display:flex;flex-direction:column;gap:6px}
+  .cred .big{font-size:22px;font-weight:800;background:linear-gradient(120deg,var(--brand),var(--brand2));
     -webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* FAQ */
+  .faq .item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff;overflow:hidden;box-shadow:var(--shadow)}
+  .faq .q{padding:16px 18px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .faq .q .arrow{transition:transform .2s ease;color:var(--brand)}
+  .faq .item.open .q .arrow{transform:rotate(180deg)}
+  .faq .a{max-height:0;overflow:hidden;transition:max-height .25s ease;padding:0 18px;color:var(--muted);font-size:14.5px}
+  .faq .item.open .a{max-height:300px;padding:0 18px 16px}
+
+  /* CTA band */
+  .cta-band{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;text-align:center;padding:54px 0}
+  .cta-band h2{font-size:clamp(22px,3.4vw,32px);font-weight:800}
+  .cta-band p{margin-top:10px;opacity:.92;max-width:620px;margin-left:auto;margin-right:auto}
+  .cta-band .btn.white{background:#fff;color:var(--brand);margin-top:22px}
 
   /* CONTACT */
   .contact{background:#fff;border-top:1px solid var(--line)}
@@ -112,6 +161,8 @@
 
   @media(max-width:880px){
     .g3,.g4,.g2{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:1fr 1fr}
     .nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:#fff;flex-direction:column;
       padding:16px 6vw;border-bottom:1px solid var(--line);gap:14px}
     .nav-links.open{display:flex}
@@ -127,9 +178,11 @@
       <div class="logo"><span class="dot">姝</span> 姝言智图</div>
       <div class="nav-links" id="nav">
         <a href="#home">首页</a>
+        <a href="#solutions">解决方案</a>
         <a href="#services">服务</a>
-        <a href="#tech">技术壁垒</a>
+        <a href="#matrix">适配矩阵</a>
         <a href="#demo">演示</a>
+        <a href="#faq">常见问题</a>
         <a href="#contact">联系</a>
       </div>
       <button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>
@@ -145,13 +198,20 @@
       帮政企客户把大屏系统"看得见、跑得稳、过得了信创验收"。</p>
     <div class="cta">
       <a href="#contact" class="btn">预约咨询</a>
-      <a href="#services" class="btn ghost">查看服务</a>
+      <a href="#solutions" class="btn ghost">看行业方案</a>
     </div>
     <div class="badges">
       <span class="badge">Glenfly 格兰菲实测适配</span>
       <span class="badge">Cesium / WebGL 深度掌握</span>
       <span class="badge">信创验收软著沉淀</span>
       <span class="badge">小单起步 · 按效果付费</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">3 大</div><div class="t">行业方案：园区 / 应急 / 能源</div></div>
+      <div class="stat"><div class="n">4+</div><div class="t">国产 GPU 适配路线</div></div>
+      <div class="stat"><div class="n">7 天</div><div class="t">最快交付首个演示 Demo</div></div>
+      <div class="stat"><div class="n">6+</div><div class="t">软著规划 · 高新认定素材</div></div>
     </div>
   </div>
 </section>
@@ -172,6 +232,50 @@
       <div class="card"><div class="ic">⚠️</div><h3>想做孪生却缺团队</h3>
         <p>园区 / 应急 / 能源想做数字孪生，但缺专业交付团队、预算又有限。</p></div>
     </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions" class="sol">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">INDUSTRY SOLUTIONS</div>
+      <h2>按行业交付，而非按功能堆砌</h2>
+      <p>我们熟悉三类客户的业务语言，开口就能聊到痛点。</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <h3>🏙️ 智慧园区</h3>
+        <div class="tagline">一张图看清园区全貌</div>
+        <ul>
+          <li>园区建筑 / 管网 / 设备三维建模</li>
+          <li>招商、能耗、安防、停车态势叠加</li>
+          <li>对接既有 OA / 安防 / 设备系统</li>
+          <li>领导视窗 + 大屏指挥双端呈现</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🚨 应急指挥</h3>
+        <div class="tagline">事件一发生，图上即定位</div>
+        <ul>
+          <li>风险点 / 资源点 / 避难所可视化</li>
+          <li>事件热力、视频融合、态势推演</li>
+          <li>对接气象、舆情、物联网实时数据</li>
+          <li>预案演练与一键调度大屏</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>⚡ 能源电力</h3>
+        <div class="tagline">场站设备状态一目了然</div>
+        <ul>
+          <li>变电站 / 管线 / 风光场站三维呈现</li>
+          <li>设备台账、巡检、告警联动</li>
+          <li>数字孪生巡检与预测性维护</li>
+          <li>国产环境稳定运行，安全可控</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="text-align:center;margin-top:18px">以上为典型交付场景，具体以实际业务需求定制。</p>
   </div>
 </section>
 
@@ -196,6 +300,46 @@
       <div class="card"><div class="ic">🌐</div><h3>④ 数字孪生项目</h3>
         <p>园区 / 应急 / 能源三维可视化系统正式交付 + 年运维。</p>
         <div class="price">¥20万–200万+</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MATRIX -->
+<section class="matrix" id="matrix">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">GPU COMPATIBILITY</div>
+      <h2>国产 GPU 适配矩阵</h2>
+      <p>自有 Glenfly 测试机，问题可真实复现；其余型号按路线推进。</p>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>国产 GPU / 厂商</th><th>适配状态</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><b>Glenfly 格兰菲</b></td><td><span class="pill warn">实测适配中</span></td><td>自有测试机，WebGL / 着色器问题可现场复现修复</td></tr>
+        <tr><td>景嘉微 JW 系列</td><td><span class="pill plan">路线规划</span></td><td>党政信创主流卡，已纳入适配计划</td></tr>
+        <tr><td>摩尔线程 MTT</td><td><span class="pill plan">路线规划</span></td><td>通用计算 GPU，演示与兼容验证准备中</td></tr>
+        <tr><td>沐曦 曦云</td><td><span class="pill plan">路线规划</span></td><td>面向数据中心，适配路线研究中</td></tr>
+        <tr><td>芯动科技</td><td><span class="pill plan">路线规划</span></td><td>纳入后续多卡兼容测试清单</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="text-align:center;margin-top:14px">适配状态以真实测试为准，最终以交付验收报告为准。</p>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="proc">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">PROCESS</div>
+      <h2>五步交付，过程透明</h2>
+      <p>小步快跑、每阶段可验收，避免"做完了才发现不是你要的"。</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h4>诊断报价</h4><p>免费初步沟通，明确痛点与范围，给出报价区间。</p></div>
+      <div class="step"><div class="num">2</div><h4>方案确认</h4><p>一页纸 SOW：做什么、不做什么、交付物、时间。</p></div>
+      <div class="step"><div class="num">3</div><h4>开发交付</h4><p>用自有脚手架快速开发，数据先 mock 后接真。</p></div>
+      <div class="step"><div class="num">4</div><h4>部署上线</h4><p>在国产 GPU 真机验证，交付代码 + 文档。</p></div>
+      <div class="step"><div class="num">5</div><h4>运维迭代</h4><p>年运维订阅，按需迭代与软著沉淀。</p></div>
     </div>
   </div>
 </section>
@@ -235,7 +379,7 @@
       <p class="note" style="text-align:center;margin-top:10px">↑ 实时 3D 演示（Cesium · 公开地图数据，需联网加载）。也可<a href="beijing-3d.html" target="_blank">单独打开 3D 演示页 ↗</a></p>
     </div>
 
-    <div class="grid g3">
+    <div class="grid g3 sample">
       <div class="card"><div class="ic">🏙️</div><h3>园区三维"一张图"</h3>
         <p>建筑 / 管线 / 态势分层叠加的园区可视化 Demo。</p>
         <div class="tagline">状态：官网实时演示中 ▶（见上方 3D 视图）</div></div>
@@ -249,19 +393,62 @@
   </div>
 </section>
 
-<!-- ABOUT -->
-<section class="about">
+<!-- CREDENTIALS -->
+<section class="cred">
   <div class="wrap">
     <div class="sec-head">
-      <div class="tag">ABOUT</div>
-      <h2>关于姝言智图</h2>
+      <div class="tag">CREDENTIALS</div>
+      <h2>资质建设路线 · 和你一起过信创</h2>
+      <p>我们也在按计划成长为"有资质、可背书"的合规服务商。</p>
     </div>
-    <div class="grid g2">
-      <div class="card"><div class="big">姝言智图</div>
-        <p>北京姝言智图科技有限公司，专注国产 GPU 适配的三维地理信息与数字孪生可视化服务。</p></div>
-      <div class="card"><div class="big">一句话定位</div>
-        <p>帮政企客户把三维地理信息 / 数字孪生系统"跑在国产显卡上、看得见、用得稳"。</p></div>
+    <div class="grid g3">
+      <div class="card"><div class="big">高新技术企业</div>
+        <p>按计划申报高新技术企业，软件收入 + 知识产权 + 研发占比达标。</p></div>
+      <div class="card"><div class="big">软著 / 专利</div>
+        <p>每个交付项目沉淀 1–2 件软著，形成自主知识产权资产。</p></div>
+      <div class="card"><div class="big">信创生态</div>
+        <p>国产 GPU / 国产 OS 适配路线推进，贴合自主可控战略。</p></div>
     </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">FAQ</div>
+      <h2>客户常问</h2>
+      <p>合作前最关心的几个问题。</p>
+    </div>
+    <div class="item">
+      <div class="q">需要驻场交付吗？<span class="arrow">▼</span></div>
+      <div class="a">默认远程为主、高效协同；必要时可按项目阶段驻场支持。我们更看重"把事交付清楚"，而非人在不在现场。</div>
+    </div>
+    <div class="item">
+      <div class="q">涉及的数据安全如何保障？<span class="arrow">▼</span></div>
+      <div class="a">敏感数据可在客户本地环境开发，不离开内网；可签署保密协议（NDA），按客户安全规范执行。</div>
+    </div>
+    <div class="item">
+      <div class="q">国产 GPU 实在适配不了怎么办？<span class="arrow">▼</span></div>
+      <div class="a">提供降级 / fallback 方案（如改用兼容渲染管线、降低精度），确保"至少能跑、能看、能用"，再逐步优化。</div>
+    </div>
+    <div class="item">
+      <div class="q">一个项目大概多久？<span class="arrow">▼</span></div>
+      <div class="a">演示 Demo 通常 1–2 周；标准数字孪生项目 1–3 个月（视范围与数据接入复杂度），小步交付、边做边验。</div>
+    </div>
+    <div class="item">
+      <div class="q">怎么开始合作？<span class="arrow">▼</span></div>
+      <div class="a">先免费沟通诊断 → 出范围与报价 → 小单试合作 → 满意后再扩大。低风险起步，先看效果。</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="wrap">
+    <h2>把你的三维系统，跑在国产显卡上</h2>
+    <p>无论是花屏待修、信创待过、还是孪生待建——先聊 30 分钟，我们给你一个可落地的起步方案。</p>
+    <a href="#contact" class="btn white">预约一次免费诊断</a>
   </div>
 </section>
 
@@ -301,6 +488,10 @@
   const btn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
   btn.addEventListener('click',()=>nav.classList.toggle('open'));
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+  // FAQ 折叠
+  document.querySelectorAll('.faq .q').forEach(q=>{
+    q.addEventListener('click',()=>q.parentElement.classList.toggle('open'));
+  });
 </script>
 </body>
 </html>
