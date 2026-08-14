@@ -16,27 +16,8 @@
   #status small{color:#7c8aa5}
 </style>
 <script>window.CESIUM_BASE_URL='cesium/';</script>
-<script>
-// 本地自托管优先；若未部署 cesium/ 目录（如 GitHub Pages 未含该目录），自动回退到 CDN
-(function(){
-  function loadCDN(){
-    var s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/Cesium.js';
-    s.onload=function(){ window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/'; window.dispatchEvent(new Event('cesiumReady')); };
-    s.onerror=function(){ var st=document.getElementById('status'); if(st){st.style.display='grid';
-      st.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">三维引擎加载失败：本地 cesium/ 与 CDN 均不可用，请检查网络或将 cesium 目录随网页一起部署。</div>';} };
-    document.head.appendChild(s);
-    var l=document.createElement('link'); l.rel='stylesheet';
-    l.href='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/Widgets/widgets.css'; document.head.appendChild(l);
-  }
-  var t=document.createElement('script'); t.src='cesium/Cesium.js';
-  t.onload=function(){ window.dispatchEvent(new Event('cesiumReady')); };
-  t.onerror=loadCDN;
-  document.head.appendChild(t);
-  // 超时兜底
-  setTimeout(function(){ if(typeof Cesium==='undefined' && !window.__cdnTried){ window.__cdnTried=true; } }, 15000);
-})();
-</script>
+<script src="cesium/Cesium.js"></script>
+<link href="cesium/Widgets/widgets.css" rel="stylesheet">
 </head>
 <body>
 <div class="hud">
@@ -53,7 +34,7 @@ const TIANDITU_TOKEN = 'c942bd85f892d90039f8c9e98f8b7bac';
 function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
   s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
 
-window.addEventListener('cesiumReady', function(){
+window.addEventListener('load', function(){
   if (typeof Cesium === 'undefined') {
     showError('⚠ 三维地图引擎（Cesium）加载失败。<br>请确认 cesium/ 目录已随网页一起部署到同一路径下（自托管，不依赖外网 CDN）。');
     return;
