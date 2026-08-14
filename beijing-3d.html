@@ -15,9 +15,28 @@
     color:#cbd5e1;font-size:15px;text-align:center;padding:20px}
   #status small{color:#7c8aa5}
 </style>
-<script>window.CESIUM_BASE_URL='https://fastly.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/';</script>
-<script src="https://fastly.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/Cesium.js"></script>
-<link href="https://fastly.jsdelivr.net/npm/cesium@1.95.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<script>window.CESIUM_BASE_URL='cesium/';</script>
+<script>
+// 本地自托管优先；若未部署 cesium/ 目录（如 GitHub Pages 未含该目录），自动回退到 CDN
+(function(){
+  function loadCDN(){
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/Cesium.js';
+    s.onload=function(){ window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/'; window.dispatchEvent(new Event('cesiumReady')); };
+    s.onerror=function(){ var st=document.getElementById('status'); if(st){st.style.display='grid';
+      st.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">三维引擎加载失败：本地 cesium/ 与 CDN 均不可用，请检查网络或将 cesium 目录随网页一起部署。</div>';} };
+    document.head.appendChild(s);
+    var l=document.createElement('link'); l.rel='stylesheet';
+    l.href='https://cdn.jsdelivr.net/npm/cesium@1.118/Build/Cesium/Widgets/widgets.css'; document.head.appendChild(l);
+  }
+  var t=document.createElement('script'); t.src='cesium/Cesium.js';
+  t.onload=function(){ window.dispatchEvent(new Event('cesiumReady')); };
+  t.onerror=loadCDN;
+  document.head.appendChild(t);
+  // 超时兜底
+  setTimeout(function(){ if(typeof Cesium==='undefined' && !window.__cdnTried){ window.__cdnTried=true; } }, 15000);
+})();
+</script>
 </head>
 <body>
 <div class="hud">
@@ -34,9 +53,9 @@ const TIANDITU_TOKEN = 'c942bd85f892d90039f8c9e98f8b7bac';
 function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
   s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
 
-window.addEventListener('load', function(){
+window.addEventListener('cesiumReady', function(){
   if (typeof Cesium === 'undefined') {
-    showError('⚠ 三维地图引擎（Cesium）加载失败。<br>通常是网络无法访问 CDN（fastly.jsdelivr.net）。<br>解决：换用国内可访问网络，或将 Cesium 自托管到国内服务器 / 对象存储。');
+    showError('⚠ 三维地图引擎（Cesium）加载失败。<br>请确认 cesium/ 目录已随网页一起部署到同一路径下（自托管，不依赖外网 CDN）。');
     return;
   }
   try { initCesium(); } catch(e){ showError('初始化失败：' + (e && e.message ? e.message : e)); }
@@ -47,7 +66,7 @@ function initCesium(){
     baseLayerPicker:false, geocoder:false, homeButton:false, sceneModePicker:false,
     navigationHelpButton:false, animation:false, timeline:false, fullscreenButton:true,
     // 先不要默认底图，下面手动加天地图或 OSM 兜底
-    imageryProvider: false
+    baseLayer:false
   });
   viewer.cesiumWidget.creditContainer.style.display='none';
 
@@ -72,7 +91,7 @@ function initCesium(){
   } else {
     document.getElementById('hud-right').innerHTML = '底图：OSM（兜底）｜ 行政区划：DataV（公开）｜ <span style="color:#f59e0b">天地图 Key 未填</span>';
     viewer.imageryLayers.addImageryProvider(
-      new Cesium.OpenStreetMapImageryProvider({ url: 'https://tile.openstreetmap.org/' })
+      new Cesium.UrlTemplateImageryProvider({ url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png', credit:'OSM' })
     );
   }
 
