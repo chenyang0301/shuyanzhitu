@@ -19,7 +19,7 @@
 <body>
 <div class="topbar">
   <div><b>姝言智图</b> · 北京行政区划演示 Demo</div>
-  <span>数据：阿里云 DataV GeoAtlas（公开）｜ 底图：OpenStreetMap（免 Key）</span>
+  <span>数据：阿里云 DataV GeoAtlas（公开）｜ 底图：智图 GeoQ（免 Key）</span>
 </div>
 <div id="map"></div>
 <div id="status"></div>
@@ -39,11 +39,20 @@ setTimeout(function(){
 if (typeof L === 'undefined') {
   showError('⚠ 地图库（Leaflet）加载失败。请确认 leaflet/ 目录已随网页一起部署到同一路径下（自托管，不依赖外网 CDN）。');
 } else {
-  // 底图改为免 Key 的 OpenStreetMap（含中国，稳定可用）。原天地图 Key 已失效（403），如需换回请填入有效 Key。
+  // 免 Key 底图：首选智图 GeoQ（国内优化），失败兜底 Esri ArcGIS 全球街道
   var map = L.map('map').setView([39.90, 116.40], 9);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19, attribution: '© OpenStreetMap contributors'
+  var geoq = L.tileLayer('https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18, attribution: '© 智图 GeoQ'
   }).addTo(map);
+  var fallbackUsed = false;
+  geoq.on('tileerror', function(){
+    if (fallbackUsed) return; fallbackUsed = true;
+    map.removeLayer(geoq);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19, attribution: '© Esri'
+    }).addTo(map);
+  });
+
   fetch('https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json')
     .then(function(r){ return r.json(); })
     .then(function(geo){
