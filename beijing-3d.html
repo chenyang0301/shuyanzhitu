@@ -39,14 +39,15 @@
 <body>
 <div class="hud">
   <div><b>姝言智图</b> · 园区三维一张图 Demo（Cesium 3D）</div>
-  <span id="hud-right">底图：智图 GeoQ（免 Key）｜ 行政区划：DataV（公开）｜ 无需 token</span>
+  <span id="hud-right">底图：天地图（Key 已填）｜ 行政区划：DataV（公开）｜ 无需 token</span>
 </div>
 <div id="status">正在加载三维地图引擎…<br><small>（需联网加载 Cesium 与地图数据；若长时间空白，可能是网络拦截了 CDN）</small></div>
 <div id="cesiumContainer"></div>
 
 <script>
-// 底图：免 Key 方案（原天地图 Key 已失效返回 403）。
-// 首选「智图 GeoQ」（国内优化），若加载失败自动兜底到「Esri ArcGIS 全球街道」（已从服务器验证可达）。
+// 天地图 Key（浏览器端，已在天地图控制台授权域名 shuyanzhitu.cn；若用 github.io 访问需把 chenyang0301.github.io 也加入授权）
+const TIANDITU_TOKEN = '66df323b6cb69bba95e4e985e42730f3';
+
 function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
   s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
 
@@ -72,25 +73,40 @@ function initCesium(){
   viewer.cesiumWidget.creditContainer.style.display='none';
   viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#0b1f3a');
 
-  // 首选：智图 GeoQ（国内优化，免 Key）
-  var geoq = new Cesium.UrlTemplateImageryProvider({
-    url: 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',
-    credit: '© 智图 GeoQ', maximumLevel: 18
+  // 天地图（矢量底图 vec + 注记 cva），已授权域名时正常显示；失败则兜底 GeoQ → Esri ArcGIS
+  var vec = new Cesium.UrlTemplateImageryProvider({
+    url: 'https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' + TIANDITU_TOKEN,
+    subdomains:'01234567', maximumLevel:18, credit:'天地图',
+    tilingScheme:new Cesium.WebMercatorTilingScheme()
   });
-  var baseLayer = viewer.imageryLayers.addImageryProvider(geoq);
-  var fallbackUsed = false;
-  baseLayer.errorEvent.addEventListener(function(){
-    if (fallbackUsed) return;
-    fallbackUsed = true;
-    try { viewer.imageryLayers.remove(baseLayer, true); } catch(e){}
-    var arcgis = new Cesium.UrlTemplateImageryProvider({
-      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-      credit: '© Esri', maximumLevel: 19
+  var cva = new Cesium.UrlTemplateImageryProvider({
+    url: 'https://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' + TIANDITU_TOKEN,
+    subdomains:'01234567', maximumLevel:18, credit:'天地图',
+    tilingScheme:new Cesium.WebMercatorTilingScheme()
+  });
+  var vecLayer = viewer.imageryLayers.addImageryProvider(vec);
+  var cvaLayer = viewer.imageryLayers.addImageryProvider(cva);
+
+  var fellBack = false;
+  function fallback(){
+    if (fellBack) return; fellBack = true;
+    try { viewer.imageryLayers.remove(vecLayer,true); viewer.imageryLayers.remove(cvaLayer,true); } catch(e){}
+    var geoq = new Cesium.UrlTemplateImageryProvider({
+      url:'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',
+      credit:'© 智图 GeoQ', maximumLevel:18 });
+    var gl = viewer.imageryLayers.addImageryProvider(geoq);
+    var f2=false;
+    gl.errorEvent.addEventListener(function(){
+      if(f2) return; f2=true;
+      try{ viewer.imageryLayers.remove(gl,true); }catch(e){}
+      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+        url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        credit:'© Esri', maximumLevel:19 }));
+      var hud=document.getElementById('hud-right'); if(hud) hud.innerHTML='底图：Esri ArcGIS（天地图/GeoQ 兜底）｜ 行政区划：DataV（公开）';
     });
-    viewer.imageryLayers.addImageryProvider(arcgis);
-    var hud = document.getElementById('hud-right');
-    if (hud) hud.innerHTML = '底图：Esri ArcGIS（GeoQ 兜底）｜ 行政区划：DataV（公开）｜ 无需 token';
-  });
+    var hud=document.getElementById('hud-right'); if(hud) hud.innerHTML='底图：智图 GeoQ（天地图兜底）｜ 行政区划：DataV（公开）';
+  }
+  vecLayer.errorEvent.addEventListener(fallback);
 
   viewer.camera.flyTo({
     destination: Cesium.Cartesian3.fromDegrees(116.40, 39.92, 90000),
