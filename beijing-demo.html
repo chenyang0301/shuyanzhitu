@@ -19,7 +19,7 @@
 <body>
 <div class="topbar">
   <div><b>姝言智图</b> · 北京行政区划演示 Demo</div>
-  <span>数据：阿里云 DataV GeoAtlas（公开）｜ 底图：智图 GeoQ（免 Key）</span>
+  <span>数据：阿里云 DataV GeoAtlas（公开）｜ 底图：天地图（Key 已填）</span>
 </div>
 <div id="map"></div>
 <div id="status"></div>
@@ -33,24 +33,33 @@
 })();
 </script>
 <script>
+// 天地图 Key（浏览器端，已授权域名 shuyanzhitu.cn；若用 github.io 访问需把 chenyang0301.github.io 也加入授权）
+const TIANDITU_TOKEN = '66df323b6cb69bba95e4e985e42730f3';
 function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
   s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
 setTimeout(function(){
 if (typeof L === 'undefined') {
   showError('⚠ 地图库（Leaflet）加载失败。请确认 leaflet/ 目录已随网页一起部署到同一路径下（自托管，不依赖外网 CDN）。');
 } else {
-  // 免 Key 底图：首选智图 GeoQ（国内优化），失败兜底 Esri ArcGIS 全球街道
   var map = L.map('map').setView([39.90, 116.40], 9);
-  var geoq = L.tileLayer('https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 18, attribution: '© 智图 GeoQ'
-  }).addTo(map);
-  var fallbackUsed = false;
-  geoq.on('tileerror', function(){
-    if (fallbackUsed) return; fallbackUsed = true;
-    map.removeLayer(geoq);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19, attribution: '© Esri'
-    }).addTo(map);
+  var tianditu = L.tileLayer('https://t{s}.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + TIANDITU_TOKEN,
+    { subdomains:'01234567', maxZoom:18, attribution:'© 天地图' }).addTo(map);
+  L.tileLayer('https://t{s}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + TIANDITU_TOKEN,
+    { subdomains:'01234567', maxZoom:18, attribution:'© 天地图' }).addTo(map);
+
+  // 天地图失败（如未授权域名）→ 兜底 智图 GeoQ → Esri ArcGIS
+  var fellBack=false;
+  tianditu.on('tileerror', function(){
+    if(fellBack) return; fellBack=true;
+    map.eachLayer(function(l){ map.removeLayer(l); });
+    var geoq = L.tileLayer('https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom:18, attribution:'© 智图 GeoQ' }).addTo(map);
+    var f2=false;
+    geoq.on('tileerror', function(){
+      if(f2) return; f2=true; map.removeLayer(geoq);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom:19, attribution:'© Esri' }).addTo(map);
+    });
   });
 
   fetch('https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json')
