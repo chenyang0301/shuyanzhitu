@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>姝言智图 · 北京行政区划演示 Demo</title>
-<link rel="stylesheet" href="leaflet/leaflet.css" />
+<link rel="stylesheet" href="leaflet/leaflet.css" onerror="this.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'" />
 <style>
   html,body{margin:0;height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
   #map{width:100%;height:100%}
@@ -19,24 +19,31 @@
 <body>
 <div class="topbar">
   <div><b>姝言智图</b> · 北京行政区划演示 Demo</div>
-  <span>数据：阿里云 DataV GeoAtlas（公开）｜ 底图：天地图</span>
+  <span>数据：阿里云 DataV GeoAtlas（公开）｜ 底图：OpenStreetMap（免 Key）</span>
 </div>
 <div id="map"></div>
 <div id="status"></div>
 
-<script src="leaflet/leaflet.js"></script>
+<script>
+// 本地优先，失败回退 CDN
+(function(){
+  var s=document.createElement('script'); s.src='leaflet/leaflet.js';
+  s.onerror=function(){ var c=document.createElement('script'); c.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js'; document.head.appendChild(c); };
+  document.head.appendChild(s);
+})();
+</script>
 <script>
 function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
   s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
+setTimeout(function(){
 if (typeof L === 'undefined') {
   showError('⚠ 地图库（Leaflet）加载失败。请确认 leaflet/ 目录已随网页一起部署到同一路径下（自托管，不依赖外网 CDN）。');
 } else {
-  var TIANDITU_TOKEN = 'c942bd85f892d90039f8c9e98f8b7bac';
+  // 底图改为免 Key 的 OpenStreetMap（含中国，稳定可用）。原天地图 Key 已失效（403），如需换回请填入有效 Key。
   var map = L.map('map').setView([39.90, 116.40], 9);
-  L.tileLayer('https://t{s}.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + TIANDITU_TOKEN,
-    { maxZoom: 18, subdomains:'01234567', attribution:'© 天地图' }).addTo(map);
-  L.tileLayer('https://t{s}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + TIANDITU_TOKEN,
-    { maxZoom: 18, subdomains:'01234567', attribution:'© 天地图' }).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
   fetch('https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json')
     .then(function(r){ return r.json(); })
     .then(function(geo){
@@ -51,6 +58,7 @@ if (typeof L === 'undefined') {
     })
     .catch(function(e){ showError('底图已加载，但行政区划数据加载失败（可能是网络拦截了 DataV）。'); });
 }
+}, 1200);
 </script>
 </body>
 </html>
