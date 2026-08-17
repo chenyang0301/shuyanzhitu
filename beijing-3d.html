@@ -59,8 +59,15 @@ window.addEventListener('cesiumReady', function(){
   try { initCesium(); } catch(e){ showError('初始化失败：' + (e && e.message ? e.message : e)); }
 });
 
+function webglAvailable(){
+  try {
+    var canvas = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+  } catch(e){ return false; }
+}
+
 function initCesium(){
-  if (!Cesium.FeatureDetection.isWebGLAvailable()) {
+  if (!webglAvailable()) {
     showError('⚠ 当前浏览器/环境不支持 WebGL，无法显示三维地图。<br>请使用较新的 Chrome / Edge，并确认未禁用硬件加速。');
     return;
   }
