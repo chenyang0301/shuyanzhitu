@@ -75,6 +75,43 @@
   #status{position:fixed;inset:0;z-index:15;display:grid;place-items:center;background:#0f1b2d;
     color:#cbd5e1;font-size:15px;text-align:center;padding:20px}
   #status small{color:#7c8aa5}
+  /* GPU 渲染状态面板（王牌）*/
+  #gpuPanel{position:fixed;left:14px;bottom:54px;z-index:27;width:272px;background:rgba(15,27,45,.95);
+    color:#dfe8f5;border:1px solid rgba(124,198,255,.3);border-radius:12px;padding:11px 14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);backdrop-filter:blur(8px);font-size:12.5px}
+  #gpuPanel .ghd{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+  #gpuPanel .ghd b{color:#7cc6ff;font-size:12px;letter-spacing:1px}
+  #gpuPanel.collapsed .gbody{display:none}
+  #gpuPanel .gbody{margin-top:9px}
+  #gpuPanel .grow{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
+  #gpuPanel .gk{color:#8aa0c2;flex-shrink:0}
+  #gpuPanel .gv{color:#e6eefc;font-weight:600;text-align:right;word-break:break-word}
+  #gpuPanel .gv.domestic{color:#fbbf24}
+  #gpuPanel .gcopy{margin-top:10px;background:#102a1e;border:1px solid #1f6b46;color:#9fe6c0;
+    border-radius:9px;padding:9px 10px;line-height:1.62;font-size:11.5px}
+  #gpuPanel .gcopy b{color:#7cffb0}
+  /* 云渲染推流覆盖层 */
+  #cloudStream{position:fixed;inset:54px 0 0 0;z-index:24;display:none;overflow:hidden;background:#05080f}
+  #cloudStream video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92}
+  #cloudStream .cs-bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:2;
+    background:rgba(15,27,45,.85);color:#fff;padding:8px 16px;border-radius:999px;font-size:13px;
+    display:flex;gap:16px;align-items:center;border:1px solid rgba(34,197,94,.45)}
+  #cloudStream .cs-bar .live{width:9px;height:9px;border-radius:50%;background:#22c55e;animation:blink 1s infinite}
+  #cloudStream .cs-stat{color:#9fe6c0;font-size:12px;font-variant-numeric:tabular-nums}
+  #cloudStream .cs-note{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:2;
+    background:rgba(15,27,45,.82);color:#cbd5e1;padding:9px 16px;border-radius:10px;font-size:12px;
+    max-width:560px;text-align:center;line-height:1.6}
+  #cloudStream .cs-note b{color:#9fe6c0}
+  /* 弱网 / 端边网协同日志 */
+  #netLog{position:fixed;left:50%;bottom:54px;transform:translateX(-50%);z-index:27;width:min(440px,92vw);
+    background:rgba(15,27,45,.96);border:1px solid rgba(251,191,36,.35);border-radius:12px;padding:10px 14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);display:none;backdrop-filter:blur(8px)}
+  #netLog .nhd{display:flex;justify-content:space-between;align-items:center;color:#fbbf24;font-size:12.5px;font-weight:700}
+  #netLog .nlist{margin-top:8px;max-height:150px;overflow-y:auto;font-size:12px;color:#cbd5e1}
+  #netLog .nline{padding:4px 0;border-bottom:1px dashed rgba(255,255,255,.08);display:flex;gap:8px;line-height:1.5}
+  #netLog .ntag{color:#7cc6ff;flex-shrink:0;font-weight:600}
+  #netLog .nok{color:#22c55e}
+  #netLog .nwarn{color:#fbbf24}
   .badge{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;font-size:11.5px;color:#9fb0cc;
     background:rgba(15,27,45,.7);padding:5px 12px;border-radius:999px}
   @media(max-width:720px){
@@ -85,6 +122,9 @@
     #videoTwin{width:64vw}
     .hud .title span.full{display:none}
     .btn2{padding:6px 9px;font-size:12px}
+    #gpuPanel{width:200px;left:8px;bottom:48px;font-size:11.5px;padding:9px 11px}
+    #netLog{bottom:48px}
+    #cloudStream .cs-note{font-size:11px;width:90vw}
   }
 </style>
 <script>window.CESIUM_BASE_URL='cesium/';</script>
@@ -112,6 +152,8 @@
   <div class="acts">
     <button class="btn2" id="btnPanel">☰ 控制面板</button>
     <button class="btn2" id="btnMode">地上模式</button>
+    <button class="btn2" id="btnCloud">本地 WebGL</button>
+    <button class="btn2" id="btnNet">弱网模拟</button>
     <button class="btn2" id="btnReset">重置视角</button>
   </div>
 </div>
@@ -170,6 +212,31 @@
 <div id="videoTwin">
   <div class="vt-hd"><span>📹 监控点位 · 视频孪生</span><span class="x" id="vtClose">✕</span></div>
   <video src="media/demo-showcase.mp4" autoplay loop muted playsinline></video>
+</div>
+
+<!-- GPU 渲染状态面板（王牌功能：直接绑定国产 GPU 三维修复业务）-->
+<div id="gpuPanel">
+  <div class="ghd" id="gpuToggle"><b>⚙ GPU 渲染状态</b><span id="gpuArrow">▾</span></div>
+  <div class="gbody">
+    <div class="grow"><span class="gk">浏览器</span><span class="gv" id="gpuBrowser">—</span></div>
+    <div class="grow"><span class="gk">操作系统</span><span class="gv" id="gpuOS">—</span></div>
+    <div class="grow"><span class="gk">GPU / 渲染器</span><span class="gv" id="gpuCard">—</span></div>
+    <div class="grow"><span class="gk">渲染模式</span><span class="gv" id="gpuMode">本地 WebGL</span></div>
+    <div class="gcopy">此 Demo 可用来 <b>复现国产显卡下花屏、纹理异常、卡顿</b> 现象；如果您当前环境出现渲染异常，<b>正是我们可以解决的故障场景</b>。</div>
+  </div>
+</div>
+
+<!-- 信创云渲染推流覆盖层 -->
+<div id="cloudStream">
+  <video src="media/demo-showcase.mp4" autoplay loop muted playsinline></video>
+  <div class="cs-bar"><span class="live"></span>信创云渲染推流中<div class="cs-stat" id="csStat">码率 8.2 Mbps · 延迟 38 ms · 60 FPS</div></div>
+  <div class="cs-note">本地国产显卡跑不动大场景时，可切换 <b>云渲染方案</b>：渲染放到信创服务端，端侧仅做解码显示 —— 对应新增业务「信创三维云渲染」。</div>
+</div>
+
+<!-- 弱网 / 端-边-网协同日志 -->
+<div id="netLog">
+  <div class="nhd"><span>⚠ 弱网 / 断网模拟 · 端-边-网协同</span><span id="netStat" class="nwarn">断网</span></div>
+  <div class="nlist" id="netList"></div>
 </div>
 
 <div id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
@@ -534,6 +601,87 @@ function initCesium(){
   document.getElementById('mClear').onclick=function(){ measurePts=[]; if(measureLine){viewer.entities.remove(measureLine);measureLine=null;}
     measureEnts.forEach(function(e){viewer.entities.remove(e);}); measureEnts=[]; measureMode=null;
     document.getElementById('mVal').textContent='已清除'; };
+
+  // ===== GPU 渲染状态面板（王牌功能）=====
+  function detectBrowser(){ var ua=navigator.userAgent;
+    if(/Edg\//.test(ua)) return 'Microsoft Edge';
+    if(/360(?:SE|EE|浏览器)/.test(ua)||/QihooBrowser/.test(ua)) return '360 安全浏览器';
+    if(/RedLotus|Honglianhua|红莲花/.test(ua)) return '红莲花浏览器';
+    if(/QiAnXin|QAX|奇安信/.test(ua)) return '奇安信可信浏览器';
+    if(/UOS|UnionTech|统信/.test(ua)) return '统信 UOS 浏览器';
+    if(/Chrome\//.test(ua)) return 'Chrome';
+    if(/Firefox\//.test(ua)) return 'Firefox';
+    if(/Safari\//.test(ua)&&!/Chrome/.test(ua)) return 'Safari';
+    return '未知浏览器';
+  }
+  function detectOS(){ var ua=navigator.userAgent;
+    if(/Windows NT 10/.test(ua)) return 'Windows 10/11';
+    if(/Windows/.test(ua)) return 'Windows';
+    if(/Android/.test(ua)) return 'Android';
+    if(/(iPhone|iPad|Mac OS X)/.test(ua)) return 'macOS / iOS';
+    if(/Linux/.test(ua)) return 'Linux / 国产操作系统';
+    return '未知系统';
+  }
+  function detectGPU(){ try{
+    var c=document.createElement('canvas'); var gl=c.getContext('webgl')||c.getContext('experimental-webgl');
+    if(!gl) return 'WebGL 不可用';
+    var dbg=gl.getExtension('WEBGL_debug_renderer_info');
+    if(dbg){ var r=(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)||'').toString();
+      if(/JM|景嘉微|Jingjia/.test(r)) return '景嘉微 JM 系列（国产 GPU）';
+      if(/Mthreads|摩尔线程|MTT|Moore/.test(r)) return '摩尔线程 MTT 系列（国产 GPU）';
+      if(/Glenfly|格兰菲|Arise/.test(r)) return '格兰菲 Glenfly（国产 GPU）';
+      if(/InnoSilicon|芯动|风华/.test(r)) return '芯动科技（国产 GPU）';
+      return r||'未知 GPU'; }
+    return '（浏览器未开放 GPU 识别，需开启调试扩展）';
+  }catch(e){ return 'GPU 识别失败'; } }
+  var gpuCardEl=document.getElementById('gpuCard');
+  gpuCardEl.textContent=detectGPU();
+  gpuCardEl.className='gv'+((/国产 GPU/.test(gpuCardEl.textContent))?' domestic':'');
+  document.getElementById('gpuBrowser').textContent=detectBrowser();
+  document.getElementById('gpuOS').textContent=detectOS();
+  document.getElementById('gpuToggle').onclick=function(){
+    var p=document.getElementById('gpuPanel'); p.classList.toggle('collapsed');
+    document.getElementById('gpuArrow').textContent=p.classList.contains('collapsed')?'▸':'▾';
+  };
+
+  // ===== 云渲染模式切换（信创三维云渲染）=====
+  var cloudMode=false, csTimer=null;
+  function setCloud(on){ cloudMode=on;
+    document.getElementById('cloudStream').style.display=on?'block':'none';
+    document.getElementById('btnCloud').textContent=on?'信创云渲染':'本地 WebGL';
+    document.getElementById('btnCloud').classList.toggle('on',on);
+    document.getElementById('gpuMode').textContent=on?'信创云渲染推流':'本地 WebGL';
+    if(on){ var v=document.querySelector('#cloudStream video'); try{v.play();}catch(e){}
+      csTimer=setInterval(function(){ var bit=7.6+Math.random()*1.4, lat=30+Math.round(Math.random()*14), fps=58+Math.round(Math.random()*4);
+        document.getElementById('csStat').textContent='码率 '+bit.toFixed(1)+' Mbps · 延迟 '+lat+' ms · '+fps+' FPS'; },1100);
+    } else { if(csTimer){clearInterval(csTimer);csTimer=null;} }
+  }
+  document.getElementById('btnCloud').onclick=function(){ setCloud(!cloudMode); };
+
+  // ===== 弱网模拟 · 端-边-网分布式消息协同（前端模拟）=====
+  var weakNet=false, netTimer=null, netSeq=0;
+  function pushNet(tag,msg,cls){ var list=document.getElementById('netList');
+    var d=document.createElement('div'); d.className='nline';
+    d.innerHTML='<span class="ntag">'+tag+'</span><span class="'+(cls||'')+'">'+msg+'</span>';
+    list.appendChild(d); list.scrollTop=list.scrollHeight; if(list.children.length>40) list.removeChild(list.firstChild); }
+  function setWeak(on){ weakNet=on;
+    document.getElementById('netLog').style.display=on?'block':'none';
+    document.getElementById('btnNet').classList.toggle('on',on);
+    if(on){ var st=document.getElementById('netStat'); st.textContent='断网'; st.className='nwarn';
+      document.getElementById('netList').innerHTML='';
+      pushNet('[本地]','点位数据写入本地缓存（IndexedDB / 边缘存储）…','nok');
+      pushNet('[边缘]','断网状态下消息进入本地队列，标记为「待补传」','');
+      var points=['CAM-01 视频流心跳','SEN-C1 温度 67.2℃','POI-A 设备在线 186/200','SEN-A1 电压 10.4kV','能源站C 告警待上报'];
+      netTimer=setInterval(function(){ netSeq++; var p=points[netSeq%points.length];
+        if(netSeq%4===0){ pushNet('[网络]','检测到链路抖动，按退避策略自动重传（200ms）…','nwarn'); }
+        else { pushNet('[边缘→云]','补传「'+p+'」→ 云端确认 ACK ✓','nok'); }
+      },1500);
+      setTimeout(function(){ if(!weakNet)return; st.textContent='重连成功'; st.className='nok';
+        pushNet('[协同]','断网期间 '+netSeq+' 条消息已全部补传完成，端-边-网一致 ✓','nok');
+      },9000);
+    } else { if(netTimer){clearInterval(netTimer);netTimer=null;} }
+  }
+  document.getElementById('btnNet').onclick=function(){ setWeak(!weakNet); };
 
   // ===== 告警气泡（周期提示）=====
   var toast=document.getElementById('toast');
