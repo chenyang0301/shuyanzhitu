@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>成功案例 · 姝言智图｜GPU 适配 / 信创改造 / 数字孪生</title>
+<meta name="description" content="姝言智图代表性项目：国产 GPU 三维故障修复、信创三维改造、园区数字孪生。客户场景、我们的做法与成效。" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a href="index.html" class="logo"><span class="dot">姝</span> 姝言智图</a>
+      <div class="nav-links" id="nav">
+        <a href="index.html">首页</a>
+        <a href="services.html">服务内容</a>
+        <a href="demo.html">3D演示Demo</a>
+        <a href="cases.html" class="active">成功案例</a>
+        <a href="faq.html">常见问题</a>
+        <a href="contact.html">联系我们</a>
+      </div>
+      <a href="contact.html#book" class="btn sm nav-cta">预约诊断</a>
+      <button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">首页</a> / 成功案例</div>
+    <h1>我们擅长处理的<span class="hl">三类项目</span></h1>
+    <p class="lead">下面按三大服务线，呈现我们实际能交付的项目类型与成效。（为保护客户信息，细节已做脱敏与示意化处理。）</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="grid g3">
+
+      <div class="case-card">
+        <div class="c-top"><div class="c-ind">GPU 故障修复</div><h3>某园区三维大屏"花屏"修复</h3></div>
+        <div class="c-body">
+          <div class="row"><span class="k">客户痛点</span><span class="v">国产显卡上升级后大屏热力图层花屏、大场景偶发崩溃。</span></div>
+          <div class="row"><span class="k">我们的做法</span><span class="v">在自有 Glenfly 测试机复现，定位扩展缺失与显存问题，降级着色器 + 加 fallback。</span></div>
+          <div class="row"><span class="k">成效</span><span class="v">核心场景稳定运行，交付兼容测试报告，客户顺利过内部验收。</span></div>
+        </div>
+        <div class="c-foot">✓ 小单快修 · 约 1 周</div>
+      </div>
+
+      <div class="case-card">
+        <div class="c-top"><div class="c-ind">信创三维改造</div><h3>某政企系统三维模块信创适配</h3></div>
+        <div class="c-body">
+          <div class="row"><span class="k">客户痛点</span><span class="v">信创改造要求三维模块跑通国产环境，但原技术栈不兼容、无方案。</span></div>
+          <div class="row"><span class="k">我们的做法</span><span class="v">现状调研 → 出《信创适配方案》→ 动手改造 → 配验收材料与软著。</span></div>
+          <div class="row"><span class="k">成效</span><span class="v">三维模块在国产 CPU/OS/GPU 跑通，方案沉淀为可复用方法论。</span></div>
+        </div>
+        <div class="c-foot">✓ 咨询 + 实施 · 按天计费</div>
+      </div>
+
+      <div class="case-card">
+        <div class="c-top"><div class="c-ind">数字孪生项目</div><h3>园区三维可视化"一张图"</h3></div>
+        <div class="c-body">
+          <div class="row"><span class="k">客户痛点</span><span class="v">想建园区孪生，但 Demo 无法接真实数据、无长期运维。</span></div>
+          <div class="row"><span class="k">我们的做法</span><span class="v">先交 MVP（核心场景 + 2–3 业务模块），数据先 mock 后接真，附年运维。</span></div>
+          <div class="row"><span class="k">成效</span><span class="v">可运行系统上线，培训 + 文档齐全，后续持续迭代。</span></div>
+        </div>
+        <div class="c-foot">✓ MVP 起步 · 年运维订阅</div>
+      </div>
+
+    </div>
+    <p class="note" style="text-align:center;margin-top:22px">以上为代表性项目类型示意，具体以实际签约范围与交付为准。想看贴合你场景的效果，可预约定制 Demo。</p>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>你的项目，会是下一个案例</h2>
+    <p>先免费聊 30 分钟，我们判断该"修"、该"改"还是该"建"，并给出起步方案。</p>
+    <a href="contact.html#book" class="btn white">预约一次免费诊断</a>
+  </div>
+</section>
+
+<footer>
+  © 2026 <b>北京姝言智图科技有限公司</b> · 国产 GPU 适配三维可视化 · 京 ICP 备 [编号] 号
+  <div style="margin-top:8px"><a href="index.html">首页</a> · <a href="services.html">服务</a> · <a href="demo.html">演示</a> · <a href="contact.html">联系</a></div>
+</footer>
+
+<script>
+  const btn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
+  btn.addEventListener('click',()=>nav.classList.toggle('open'));
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+</script>
+</body>
+</html>
