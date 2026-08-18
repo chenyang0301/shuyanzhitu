@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GPU 故障修复 · 姝言智图｜国产显卡三维系统花屏/黑屏/卡顿修复</title>
+<meta name="description" content="已有三维大屏在国产 GPU（格兰菲、景嘉微）上花屏、黑屏、卡顿、崩溃？姝言智图诊断根因、修复代码、出具《国产 GPU 兼容性测试报告》。¥3k–1万/次。" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a href="index.html" class="logo"><span class="dot">姝</span> 姝言智图</a>
+      <div class="nav-links" id="nav">
+        <a href="index.html">首页</a>
+        <a href="services.html">服务内容</a>
+        <a href="demo.html">3D演示Demo</a>
+        <a href="cases.html">成功案例</a>
+        <a href="faq.html">常见问题</a>
+        <a href="contact.html">联系我们</a>
+      </div>
+      <a href="contact.html#book" class="btn sm nav-cta">预约诊断</a>
+      <button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>
+    </nav>
+  </div>
+</header>
+
+<section class="svc-hero">
+  <div class="wrap">
+    <div class="breadcrumb" style="color:#9fb0cc"><a href="index.html" style="color:#cbd5e1">首页</a> / <a href="services.html" style="color:#cbd5e1">服务内容</a> / GPU 故障修复</div>
+    <div class="tag">SERVICE ①</div>
+    <h1>GPU 故障修复</h1>
+    <p>你的三维大屏在国产显卡（Glenfly 格兰菲 / 景嘉微）上花屏、黑屏、卡顿、WebGL context 丢失？
+      我们手里<strong style="color:#7cc6ff">有真实国产 GPU 测试机</strong>，问题能复现、能对症修复，不是"理论上能跑"。</p>
+    <div class="price-pill">报价区间：¥3,000 – 10,000 / 次</div>
+  </div>
+</section>
+
+<section class="svc-block">
+  <div class="wrap">
+    <div class="blk-tag">PAIN · 痛点</div>
+    <h2>你正在经历的，多半是这几类</h2>
+    <ul>
+      <li><b>画面异常</b>：在国产显卡上花屏、黑屏、闪烁、贴图错乱、渲染撕裂。</li>
+      <li><b>性能崩塌</b>：卡顿、掉帧、大场景直接崩溃或 WebGL context 丢失。</li>
+      <li><b>根本跑不起来</b>：国外显卡正常、换国产显卡整页空白或报错。</li>
+      <li><b>验收卡壳</b>：信创环境要求国产 GPU 跑通，但现有三维组件就是过不了。</li>
+    </ul>
+    <p style="margin-top:12px">核心原因往往就那几类：WebGL 扩展缺失、GLSL 着色器精度/语法不兼容、Cesium 依赖 WebGL2 而国产显卡支持不全、显存/带宽不足、驱动 bug。</p>
+  </div>
+</section>
+
+<section class="svc-block" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="blk-tag">SOLUTION · 方案</div>
+    <h2>我们怎么修</h2>
+    <ul>
+      <li><b>先远程诊断</b>：问清引擎（Cesium / Three.js / 自研）、显卡型号 + 驱动版本、浏览器、具体现象。</li>
+      <li><b>真实复现</b>：在你的同款国产测试机（或我们的 Glenfly 测试机）上重现问题。</li>
+      <li><b>对症修复</b>：降级着色器、替换不支持的扩展、加 fallback、调精度、改渲染管线、打补丁。</li>
+      <li><b>回归验证</b>：在目标显卡/浏览器矩阵上跑通，确认稳定。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="svc-block">
+  <div class="wrap">
+    <div class="blk-tag">DELIVERABLES · 交付物</div>
+    <h2>你拿到什么</h2>
+    <div class="doc-grid">
+      <div class="doc-card"><h4>修好的代码</h4><p>可直接合入你项目的修复补丁 / 分支，含必要的降级与 fallback 逻辑。</p></div>
+      <div class="doc-card"><h4>《国产 GPU 兼容性测试报告》</h4><p>显卡 × 浏览器 × 现象 × 结论矩阵，可作为验收与软著素材。</p></div>
+      <div class="doc-card"><h4>复现与验证记录</h4><p>问题复现截图 / 录屏 + 修复后验证结果，过程可追溯。</p></div>
+      <div class="doc-card"><h4>后续建议</h4><p>给出长期的 GPU 适配规范与风险规避清单。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-block" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="blk-tag">PRICING · 报价区间</div>
+    <div class="price-band">
+      <div class="range">¥3,000 – 10,000 / 次</div>
+      <p>按问题复杂度与显卡/浏览器覆盖数量浮动。小问题快修几千元即可；多卡多现象的系统级排查按上限。
+        先免费诊断判断范围，再给明确报价，不修好不收费。</p>
+    </div>
+    <div class="svc-cta" style="justify-content:center">
+      <a href="contact.html#book" class="btn">预约免费诊断</a>
+      <a href="demo.html" class="btn ghost">看 3D 演示</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 <b>北京姝言智图科技有限公司</b> · 国产 GPU 适配三维可视化 · 京 ICP 备 [编号] 号
+  <div style="margin-top:8px"><a href="index.html">首页</a> · <a href="services.html">服务</a> · <a href="demo.html">演示</a> · <a href="contact.html">联系</a></div>
+</footer>
+
+<script>
+  const btn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
+  btn.addEventListener('click',()=>nav.classList.toggle('open'));
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+</script>
+</body>
+</html>
