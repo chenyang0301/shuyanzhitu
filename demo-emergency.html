@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>姝言智图 · 应急态势大屏 Demo</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0a1422;color:#dbe5f3}
+  .dash{display:flex;flex-direction:column;height:100%}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:linear-gradient(90deg,#0f1b2d,#15324f);border-bottom:1px solid #1d3350}
+  .top h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:1px}
+  .top .clock{font-size:13px;color:#7cc6ff;font-variant-numeric:tabular-nums}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 20px}
+  .kpi{background:#0f2238;border:1px solid #1d3350;border-radius:12px;padding:14px 16px}
+  .kpi .v{font-size:26px;font-weight:800;color:#fff}
+  .kpi .l{font-size:12.5px;color:#8aa0c0;margin-top:4px}
+  .kpi.a .v{color:#38bdf8}.kpi.b .v{color:#f59e0b}.kpi.c .v{color:#34d399}.kpi.d .v{color:#f87171}
+  .main{display:grid;grid-template-columns:2fr 1fr;gap:14px;padding:0 20px 16px;flex:1;min-height:0}
+  #map{height:100%;border-radius:12px;border:1px solid #1d3350;background:#0a1422}
+  .panel{background:#0f2238;border:1px solid #1d3350;border-radius:12px;padding:14px;display:flex;flex-direction:column;min-height:0}
+  .panel h3{font-size:14px;color:#7cc6ff;margin-bottom:10px;font-weight:700}
+  .ev{background:#0c1c30;border:1px solid #1d3350;border-left:3px solid #f59e0b;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px}
+  .ev .t{color:#fff;font-weight:600}
+  .ev .m{color:#8aa0c0;margin-top:3px}
+  .ev .st{float:right;font-size:11px;color:#f59e0b;font-weight:700}
+  .legend{padding:0 20px 14px;font-size:12px;color:#8aa0c0;display:flex;gap:18px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  #status{position:fixed;inset:0;display:none;place-items:center;background:#0a1422;color:#cbd5e1;font-size:15px;text-align:center;padding:20px;z-index:50}
+</style>
+<link rel="stylesheet" href="leaflet/leaflet.css" onerror="this.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'" />
+</head>
+<body>
+<div class="dash">
+  <div class="top">
+    <h1>🚨 应急态势大屏 · 园区综合指挥 Demo</h1>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+  <div class="kpis">
+    <div class="kpi a"><div class="v">128</div><div class="l">在线应急资源</div></div>
+    <div class="kpi b"><div class="v">7</div><div class="l">待处理事件</div></div>
+    <div class="kpi c"><div class="v">23</div><div class="l">今日已处置</div></div>
+    <div class="kpi d"><div class="v">Ⅲ级</div><div class="l">当前态势等级</div></div>
+  </div>
+  <div class="main">
+    <div id="map"></div>
+    <div class="panel">
+      <h3>实时事件列表</h3>
+      <div class="ev"><span class="st">处置中</span><div class="t">A 区配电室温度异常</div><div class="m">09:42 · 传感器告警 · 派单运维</div></div>
+      <div class="ev"><span class="st">待派单</span><div class="t">B 区消防通道占用</div><div class="m">09:31 · 视频 AI 识别 · 待派单</div></div>
+      <div class="ev"><span class="st">处置中</span><div class="t">C 区管网压力骤降</div><div class="m">09:18 · SCADA 预警 · 排查中</div></div>
+      <div class="ev"><span class="st">已完成</span><div class="t">南门人流超限</div><div class="m">08:55 · 闸机计数 · 已分流</div></div>
+      <div class="ev"><span class="st">待派单</span><div class="t">D 区周界入侵</div><div class="m">08:40 · 电子围栏 · 待核</div></div>
+      <div class="ev" style="border-left-color:#34d399"><span class="st" style="color:#34d399">巡检</span><div class="t">能源站例行巡检</div><div class="m">08:20 · 机器人 · 正常</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><i style="background:#f59e0b"></i>待处理/处置中</span>
+    <span><i style="background:#34d399"></i>正常/已完成</span>
+    <span><i style="background:#38bdf8"></i>应急资源点</span>
+    <span>数据：示意 mock · 底图：天地图 / 智图 GeoQ</span>
+  </div>
+</div>
+<div id="status"></div>
+
+<script>
+(function(){
+  var s=document.createElement('script'); s.src='leaflet/leaflet.js';
+  s.onerror=function(){ var c=document.createElement('script'); c.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js'; document.head.appendChild(c); };
+  document.head.appendChild(s);
+})();
+const TIANDITU_TOKEN='66df323b6cb69bba95e4e985e42730f3';
+function showError(m){var e=document.getElementById('status');e.style.display='grid';e.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+m+'</div>';}
+setTimeout(function(){
+  if(typeof L==='undefined'){showError('⚠ 地图库（Leaflet）加载失败。请确认 leaflet/ 目录已随网页一起部署。');return;}
+  var map=L.map('map',{zoomControl:true}).setView([39.91,116.40],11);
+  var td=L.tileLayer('https://t{s}.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk='+TIANDITU_TOKEN,{subdomains:'01234567',maxZoom:18,attribution:'© 天地图'}).addTo(map);
+  L.tileLayer('https://t{s}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk='+TIANDITU_TOKEN,{subdomains:'01234567',maxZoom:18,attribution:'© 天地图'}).addTo(map);
+  var fb=false;
+  td.on('tileerror',function(){if(fb)return;fb=true;map.eachLayer(function(l){map.removeLayer(l);});
+    L.tileLayer('https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© 智图 GeoQ'}).addTo(map);});
+  var pts=[
+    {n:'应急指挥点 B',lat:39.95,lon:116.45,type:'res'},
+    {n:'能源站 C',lat:39.88,lon:116.33,type:'res'},
+    {n:'A区配电室',lat:39.92,lon:116.39,type:'ev'},
+    {n:'C区管网',lat:39.90,lon:116.43,type:'ev'},
+    {n:'D区周界',lat:39.93,lon:116.36,type:'ev'}
+  ];
+  pts.forEach(function(p){
+    var color=p.type==='res'?'#38bdf8':'#f59e0b';
+    L.circleMarker([p.lat,p.lon],{radius:p.type==='res'?8:7,color:color,fillColor:color,fillOpacity:.7,weight:2})
+      .addTo(map).bindPopup('<b>'+p.n+'</b>');
+  });
+  fetch('https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json').then(function(r){return r.json();}).then(function(g){
+    L.geoJSON(g,{style:{color:'#2563eb',weight:1,fillColor:'#06b6d4',fillOpacity:0.12}}).addTo(map);
+  }).catch(function(){});
+},1200);
+function tick(){var d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('zh-CN',{hour12:false});}
+tick();setInterval(tick,1000);
+</script>
+</body>
+</html>
