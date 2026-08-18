@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>3D 演示 Demo · 姝言智图｜园区一张图 / 应急态势大屏 / GPU 兼容性报告</title>
-<meta name="description" content="姝言智图 3D 演示：Cesium 园区一张图、应急态势大屏、GPU 兼容性测试报告，浏览器内直接预览。" />
+<meta name="description" content="姝言智图 3D 演示：Cesium 园区一张图、应急态势大屏、GPU 兼容性测试报告，浏览器内直接预览，附运行环境与国产浏览器/显卡支持说明、样例截图与效果录屏。" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -29,17 +29,115 @@
 
 <section class="hero">
   <div class="wrap">
-    <div class="breadcrumb"><a href="index.html">首页</a> / 3D 演示 Demo</div>
+    <div class="breadcrumb"><a href="index.html">首页</a> / 3D演示Demo</div>
     <h1>3D 演示 Demo · <span class="hl">浏览器里直接看</span></h1>
     <p class="lead">不是效果图，是真实跑在浏览器里的三维场景。下面三个 Demo 可直接预览，点"全屏查看"可独立打开。</p>
     <div class="demo-note" style="margin-top:18px">
       <b>提示：</b>三维 Demo 需联网加载地图引擎与公开地图数据；在 <b>shuyanzhitu.cn</b> 域名为天地图原版底图，其他环境会自动降级到智图 GeoQ / Esri 兜底，均不影响演示。
+      <br><b style="color:#ffd479">如果访问 Demo 出现花屏、卡顿、黑屏、地图裂块 —— 这恰恰是我们能解决的典型问题。</b>国产显卡 + 浏览器驱动组合下这类现象极常见，我们的服务就是把它修到流畅。
     </div>
   </div>
 </section>
 
+<!-- ============ 使用说明 ============ -->
+<section id="usage" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head" style="text-align:left;margin:0 0 22px">
+      <span class="tag">运行说明</span>
+      <h2>Demo 运行环境 & 支持清单</h2>
+      <p>看懂这段，能少走 90% 的弯路：Demo 跑不起来，多半不是 Demo 的问题，是环境没对齐。</p>
+    </div>
+
+    <div class="usage-grid">
+      <div class="u-card">
+        <h4>① 运行环境要求</h4>
+        <ul>
+          <li><b>图形接口</b>：浏览器需支持 <b>WebGL / WebGL2</b>（现代浏览器默认开启）。</li>
+          <li><b>网络</b>：首次加载需联网拉取 Cesium / Leaflet 引擎与公开地图瓦片（约数 MB）。</li>
+          <li><b>操作系统</b>：Windows / 统信 UOS / 麒麟 / 中标麒麟 / 方德 /  macOS 均可。</li>
+          <li><b>硬件加速</b>：浏览器「硬件加速」需开启，否则三维会卡成幻灯片。</li>
+        </ul>
+      </div>
+
+      <div class="u-card">
+        <h4>② 支持的国产浏览器</h4>
+        <div class="chips">
+          <span>360 安全浏览器（信创版/极速模式）</span>
+          <span>红莲花安全浏览器</span>
+          <span>奇安信可信浏览器（政企版）</span>
+          <span>统信 UOS 浏览器</span>
+          <span>银河麒麟浏览器</span>
+          <span>中标麒麟安全浏览器</span>
+          <span>飞腾/兆芯平台 Chromium 系</span>
+          <span>Chrome / Edge / Firefox（开发演示）</span>
+        </div>
+      </div>
+
+      <div class="u-card">
+        <h4>③ 重点适配的国产显卡</h4>
+        <div class="chips">
+          <span>景嘉微 JM7200 / JM9100 / JM9230</span>
+          <span>摩尔线程 MTT S10 / S30 / S80 / S3000</span>
+          <span>格兰菲 Glenfly（Arise 系列）</span>
+          <span>芯动科技 风华系列</span>
+          <span>壁仞 BR100 系列（计算卡）</span>
+          <span>寒武纪 / 昇腾 Atlas（AI 推理）</span>
+        </div>
+        <p class="u-tip">⚠ 老驱动 + 国产显卡组合下出现<b>花屏 / 卡顿 / 黑屏 / 裂块</b>，正是我们「GPU 故障修复」要解决的典型场景。</p>
+      </div>
+    </div>
+
+    <div class="u-alert">
+      <b>看不了在线 Demo 也不用急：</b>部分客户网络差、或浏览器不支持 WebGL，打不开上面的实时演示。
+      下方我们准备了<b>静态样例截图 + 效果录屏</b>，所有人都能直观看到效果；需要可交互版本，点「预约诊断」我们单独发你。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 样例截图 & 录屏 ============ -->
+<section id="gallery" class="matrix" style="margin-top:8px">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag">样例预览</span>
+      <h2>Demo 样例截图 & 效果录屏</h2>
+      <p>弱网 / 无 WebGL 环境也能看效果。以下为静态样例，可交互版见上方实时 Demo 或预约获取。</p>
+    </div>
+
+    <div class="gal-grid">
+      <figure class="gal-card">
+        <img src="img/demo-3d.jpg" alt="园区三维一张图 Demo 样例" loading="lazy" />
+        <figcaption>① 园区三维"一张图"（Cesium 3D）</figcaption>
+      </figure>
+      <figure class="gal-card">
+        <img src="img/demo-emergency.jpg" alt="应急态势大屏 Demo 样例" loading="lazy" />
+        <figcaption>② 应急态势大屏（Dashboard）</figcaption>
+      </figure>
+      <figure class="gal-card">
+        <img src="img/demo-gpu.jpg" alt="国产 GPU 兼容性测试报告样例" loading="lazy" />
+        <figcaption>③ 国产 GPU 兼容性测试报告</figcaption>
+      </figure>
+      <figure class="gal-card video">
+        <video controls preload="none" poster="img/demo-3d.jpg" style="width:100%;border-radius:10px;background:#0f1b2d">
+          <source src="media/demo-showcase.mp4" type="video/mp4" />
+          您的浏览器不支持视频播放。
+        </video>
+        <figcaption>▶ 效果演示短视频（园区三维 + 态势大屏）</figcaption>
+      </figure>
+    </div>
+
+    <p class="gal-note">注：截图与录屏为<b>效果示意样例</b>，用于直观展示；受篇幅限制，非全部图层与交互。可交互版本支持鼠标拖拽旋转、缩放、图层开关。</p>
+  </div>
+</section>
+
+<!-- ============ 实时 Demo ============ -->
 <section>
   <div class="wrap">
+    <div class="sec-head" style="margin-bottom:26px">
+      <span class="tag">实时预览</span>
+      <h2>三个 Demo · 浏览器内直接体验</h2>
+      <p>下方为可交互实时版（需支持 WebGL 的浏览器 + 联网）。iframe 已做懒加载，不占用首屏。</p>
+    </div>
+
     <div class="demo-grid">
 
       <div class="demo-card">
@@ -50,7 +148,7 @@
         <div class="d-body">
           <p>建筑 / 管网 / 态势分层叠加的园区可视化：北京行政区划拉伸 + 示范点位标注，真实三维地球引擎渲染。</p>
         </div>
-        <iframe src="beijing-3d.html" title="园区三维一张图 Demo" loading="lazy" style="height:540px"></iframe>
+        <iframe data-src="beijing-3d.html" title="园区三维一张图 Demo" loading="lazy" class="lazy-iframe"></iframe>
         <div class="d-foot"><a href="beijing-3d.html" target="_blank" class="btn ghost sm">全屏查看 ↗</a></div>
       </div>
 
@@ -62,7 +160,7 @@
         <div class="d-body">
           <p>应急资源、事件热力、视频融合可视化大屏：KPI 指标卡 + 实时事件列表 + 地图态势，1920×1080 可跑网页大屏。</p>
         </div>
-        <iframe src="demo-emergency.html" title="应急态势大屏 Demo" loading="lazy" style="height:560px"></iframe>
+        <iframe data-src="demo-emergency.html" title="应急态势大屏 Demo" loading="lazy" class="lazy-iframe"></iframe>
         <div class="d-foot"><a href="demo-emergency.html" target="_blank" class="btn ghost sm">全屏查看 ↗</a></div>
       </div>
 
@@ -74,7 +172,7 @@
         <div class="d-body">
           <p>GPU 故障修复的交付物模板：显卡 × 浏览器 × 现象 × 结论矩阵 + 建议配置，可作为验收与软著素材。</p>
         </div>
-        <iframe src="demo-gpu-report.html" title="GPU 兼容性测试报告" loading="lazy" style="height:640px"></iframe>
+        <iframe data-src="demo-gpu-report.html" title="GPU 兼容性测试报告" loading="lazy" class="lazy-iframe"></iframe>
         <div class="d-foot"><a href="demo-gpu-report.html" target="_blank" class="btn ghost sm">全屏查看 ↗</a></div>
       </div>
 
@@ -99,6 +197,17 @@
   const btn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
   btn.addEventListener('click',()=>nav.classList.toggle('open'));
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+
+  /* 懒加载：进入视口才把 data-src 写进 src，避免一次性拉起 Cesium 大资源 */
+  const lazy=()=>document.querySelectorAll('iframe.lazy-iframe');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((es)=>{
+      es.forEach(e=>{ if(e.isIntersecting){ const f=e.target; if(f.dataset.src){f.src=f.dataset.src;f.removeAttribute('data-src');} io.unobserve(f);} });
+    },{rootMargin:'200px'});
+    lazy().forEach(f=>io.observe(f));
+  }else{
+    lazy().forEach(f=>{ if(f.dataset.src){f.src=f.dataset.src;f.removeAttribute('data-src');} });
+  }
 </script>
 </body>
 </html>
