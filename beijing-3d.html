@@ -271,7 +271,7 @@ function initCesium(){
   }
   var viewer = new Cesium.Viewer('cesiumContainer', {
     baseLayerPicker:false, geocoder:false, homeButton:false, sceneModePicker:false,
-    navigationHelpButton:false, animation:false, timeline:false, fullscreenButton:true, baseLayer:false
+    navigationHelpButton:false, animation:false, timeline:false, fullscreenButton:false, baseLayer:false
   });
   viewer.cesiumWidget.creditContainer.style.display='none';
   viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#0b1f3a');
