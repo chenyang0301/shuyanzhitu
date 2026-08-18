@@ -8,18 +8,87 @@
   html,body,#cesiumContainer{width:100%;height:100%;margin:0;padding:0;overflow:hidden;
     font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
   .cesium-viewer,.cesium-viewer-canvas{width:100% !important;height:100% !important}
-  .hud{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(15,27,45,.86);color:#fff;
-    padding:10px 16px;display:none !important;justify-content:space-between;align-items:center;font-size:13.5px;gap:12px}
-  .hud b{color:#7cc6ff;font-size:15px}
-  .hud span{color:#9fb0cc}
+  /* 顶部栏 */
+  .hud{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;
+    padding:9px 14px;background:rgba(15,27,45,.9);color:#fff;gap:10px;backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08)}
+  .hud .title{font-weight:800;display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .hud .title .dot{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#2563eb,#06b6d4);
+    display:grid;place-items:center;font-size:12px;color:#fff}
+  .hud .title span.full{font-size:14.5px}
+  .hud .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .btn2{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;padding:7px 12px;
+    border-radius:8px;font-size:13px;cursor:pointer;white-space:nowrap}
+  .btn2:hover{background:rgba(124,198,255,.18)}
+  .btn2.on{background:linear-gradient(120deg,#2563eb,#06b6d4);border-color:transparent}
+  /* 左侧控制面板 */
+  #panel{position:fixed;top:54px;left:0;z-index:28;width:286px;max-height:calc(100vh - 74px);overflow-y:auto;
+    background:rgba(15,27,45,.95);color:#dfe8f5;padding:6px 14px 16px;border-radius:0 12px 12px 0;
+    transform:translateX(-112%);transition:transform .25s ease;backdrop-filter:blur(8px)}
+  #panel.open{transform:translateX(0)}
+  .sec{border-top:1px solid rgba(255,255,255,.1);padding:12px 0}
+  .sec:first-child{border-top:0}
+  .sec h4{font-size:12.5px;color:#7cc6ff;margin-bottom:9px;letter-spacing:1.5px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .chk{display:flex;align-items:center;gap:7px;font-size:13px;margin:6px 0;cursor:pointer;user-select:none}
+  .chk input{width:15px;height:15px;accent-color:#06b6d4}
+  .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .measure-val{font-size:13px;color:#9fe6c0;margin-top:9px;min-height:18px}
+  .hint{font-size:11.5px;color:#8aa0c2;margin-top:6px;line-height:1.5}
+  /* 右侧详情面板 */
+  #info{position:fixed;top:54px;right:0;z-index:28;width:330px;max-height:calc(100vh - 74px);overflow-y:auto;
+    background:#fff;color:#0f1b2d;box-shadow:-10px 0 30px rgba(0,0,0,.25);
+    transform:translateX(112%);transition:transform .25s ease}
+  #info.open{transform:translateX(0)}
+  #info .hd{background:linear-gradient(120deg,#0f1b2d,#15324f);color:#fff;padding:15px 18px;display:flex;
+    justify-content:space-between;align-items:flex-start;gap:10px}
+  #info .hd h3{font-size:17px;margin:0}
+  #info .hd .tag{font-size:11.5px;color:#7cc6ff;margin-top:3px}
+  #info .hd .x{cursor:pointer;font-size:18px;opacity:.8}
+  #info .bd{padding:14px 18px}
+  .kv{display:flex;justify-content:space-between;font-size:13.5px;padding:7px 0;border-bottom:1px dashed #e3e9f2}
+  .kv .k{color:#5b6b82}
+  .kv .v{font-weight:700;text-align:right}
+  .stat{display:flex;gap:10px;margin:12px 0}
+  .stat .b{flex:1;background:#eef3fb;border-radius:10px;padding:10px;text-align:center}
+  .stat .b .n{font-size:20px;font-weight:800;color:#2563eb}
+  .stat .b .l{font-size:12px;color:#5b6b82;margin-top:2px}
+  .info-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .alarm-banner{background:#fde8e8;color:#b4232a;border:1px solid #f5b5b5;border-radius:10px;
+    padding:10px 12px;font-size:13px;margin-top:10px;line-height:1.6}
+  .iot-chart{width:100%;height:90px;background:#0f1b2d;border-radius:8px;margin-top:8px}
+  .iot-row{display:flex;justify-content:space-between;font-size:13px;margin-top:6px}
+  .iot-row b{color:#b4232a}
+  /* 视频孪生窗口 */
+  #videoTwin{position:fixed;right:16px;bottom:16px;z-index:34;width:300px;background:#0f1b2d;
+    border:1px solid rgba(255,255,255,.2);border-radius:10px;overflow:hidden;display:none;
+    box-shadow:0 12px 36px rgba(0,0,0,.5)}
+  #videoTwin .vt-hd{background:rgba(255,255,255,.06);color:#fff;padding:6px 10px;font-size:12.5px;
+    display:flex;justify-content:space-between;cursor:move}
+  #videoTwin .vt-hd .x{cursor:pointer}
+  #videoTwin video{width:100%;display:block;background:#000}
+  /* 告警气泡 */
+  #toast{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:36;background:#b4232a;color:#fff;
+    padding:10px 18px;border-radius:999px;font-size:13.5px;box-shadow:0 8px 24px rgba(180,35,42,.5);display:none}
+  #toast .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#fff;margin-right:7px;
+    animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.25}}
   #status{position:fixed;inset:0;z-index:15;display:grid;place-items:center;background:#0f1b2d;
     color:#cbd5e1;font-size:15px;text-align:center;padding:20px}
   #status small{color:#7c8aa5}
+  .badge{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;font-size:11.5px;color:#9fb0cc;
+    background:rgba(15,27,45,.7);padding:5px 12px;border-radius:999px}
+  @media(max-width:720px){
+    #panel{width:86vw;top:50px}
+    #info{width:100%;top:auto;bottom:0;max-height:58vh;transform:translateY(112%);border-radius:14px 14px 0 0;
+      box-shadow:0 -10px 30px rgba(0,0,0,.25)}
+    #info.open{transform:translateY(0)}
+    #videoTwin{width:64vw}
+    .hud .title span.full{display:none}
+    .btn2{padding:6px 9px;font-size:12px}
+  }
 </style>
 <script>window.CESIUM_BASE_URL='cesium/';</script>
 <script>
-// 本地自托管优先；若未部署 cesium/ 目录（如被 GitHub Pages 重定向到 http 自定义域名被浏览器拦截），
-// 自动回退到 https CDN，规避"混合内容"拦截导致整页空白。
 (function(){
   function loadCDN(){
     var s=document.createElement('script');
@@ -39,16 +108,77 @@
 </head>
 <body>
 <div class="hud">
-  <div><b>姝言智图</b> · 园区三维一张图 Demo（Cesium 3D）</div>
-  <span id="hud-right">底图：天地图（Key 已填）｜ 行政区划：DataV（公开）｜ 无需 token</span>
+  <div class="title"><span class="dot">姝</span><span class="full">姝言智图 · 园区三维一张图</span></div>
+  <div class="acts">
+    <button class="btn2" id="btnPanel">☰ 控制面板</button>
+    <button class="btn2" id="btnMode">地上模式</button>
+    <button class="btn2" id="btnReset">重置视角</button>
+  </div>
 </div>
+
+<div id="panel">
+  <div class="sec">
+    <h4>视角漫游</h4>
+    <div class="row">
+      <button class="btn2" data-fly="overview">北京全域概览</button>
+      <button class="btn2" data-fly="A">飞到示范园区 A</button>
+      <button class="btn2" data-fly="C">飞到能源站 C</button>
+    </div>
+  </div>
+  <div class="sec">
+    <h4>图层控制</h4>
+    <label class="chk"><input type="checkbox" data-layer="admin" checked><span class="sw" style="background:#2563eb"></span>行政区划边界</label>
+    <label class="chk"><input type="checkbox" data-layer="road"><span class="sw" style="background:#f59e0b"></span>路网</label>
+    <label class="chk"><input type="checkbox" data-layer="building" checked><span class="sw" style="background:#06b6d4"></span>建筑轮廓层</label>
+    <label class="chk"><input type="checkbox" data-layer="pipe"><span class="sw" style="background:#a855f7"></span>地下管网层</label>
+    <label class="chk"><input type="checkbox" data-layer="monitor" checked><span class="sw" style="background:#22c55e"></span>监控点位</label>
+    <label class="chk"><input type="checkbox" data-layer="sensor" checked><span class="sw" style="background:#ef4444"></span>传感器点位</label>
+    <label class="chk"><input type="checkbox" data-layer="model"><span class="sw" style="background:#eab308"></span>倾斜摄影 / 园区模型</label>
+  </div>
+  <div class="sec">
+    <h4>量算工具</h4>
+    <div class="row">
+      <button class="btn2" id="mDist">距离测量</button>
+      <button class="btn2" id="mArea">面积量算</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn2" id="mFinish">结束</button>
+      <button class="btn2" id="mClear">清除</button>
+    </div>
+    <div class="measure-val" id="mVal">点击地图开始测量</div>
+    <div class="hint">距离：依次点 2+ 点；面积：依次点 3+ 点成闭环。结束后可保留图形，点"清除"移除。</div>
+  </div>
+  <div class="sec">
+    <h4>模型加载演示</h4>
+    <div class="row">
+      <button class="btn2" id="mLoad">加载模型</button>
+      <button class="btn2" id="mOrig">原始模型</button>
+      <button class="btn2" id="mLite">轻量化后</button>
+    </div>
+    <div class="hint">落到示范园区 A 后加载样例模型；对比"原始 / 轻量化"直观展示三维数据治理轻量化能力。</div>
+  </div>
+</div>
+
+<div id="info">
+  <div class="hd">
+    <div><h3 id="iName">详情</h3><div class="tag" id="iTag"></div></div>
+    <div class="x" id="iClose">✕</div>
+  </div>
+  <div class="bd" id="iBody"></div>
+</div>
+
+<div id="videoTwin">
+  <div class="vt-hd"><span>📹 监控点位 · 视频孪生</span><span class="x" id="vtClose">✕</span></div>
+  <video src="media/demo-showcase.mp4" autoplay loop muted playsinline></video>
+</div>
+
+<div id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
+<div class="badge">点击点位查看详情 · 左侧面板控制图层与漫游</div>
 <div id="status">正在加载三维地图引擎…<br><small>（需联网加载 Cesium 与地图数据；若长时间空白，可能是网络拦截了 CDN）</small></div>
 <div id="cesiumContainer"></div>
 
 <script>
-// 天地图 Key（浏览器端，已在天地图控制台授权域名 shuyanzhitu.cn；若用 github.io 访问需把 chenyang0301.github.io 也加入授权）
 const TIANDITU_TOKEN = '66df323b6cb69bba95e4e985e42730f3';
-
 function showError(msg){ var s=document.getElementById('status'); s.style.display='grid';
   s.innerHTML='<div style="color:#f59e0b;max-width:560px;line-height:1.7">'+msg+'</div>'; }
 
@@ -61,10 +191,9 @@ window.addEventListener('cesiumReady', function(){
 });
 
 function webglAvailable(){
-  try {
-    var canvas = document.createElement('canvas');
-    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
-  } catch(e){ return false; }
+  try { var c=document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (c.getContext('webgl')||c.getContext('experimental-webgl'))); }
+  catch(e){ return false; }
 }
 
 function initCesium(){
@@ -72,82 +201,68 @@ function initCesium(){
     showError('⚠ 当前浏览器/环境不支持 WebGL，无法显示三维地图。<br>请使用较新的 Chrome / Edge，并确认未禁用硬件加速。');
     return;
   }
-
   var viewer = new Cesium.Viewer('cesiumContainer', {
     baseLayerPicker:false, geocoder:false, homeButton:false, sceneModePicker:false,
-    navigationHelpButton:false, animation:false, timeline:false, fullscreenButton:true,
-    baseLayer:false
+    navigationHelpButton:false, animation:false, timeline:false, fullscreenButton:true, baseLayer:false
   });
   viewer.cesiumWidget.creditContainer.style.display='none';
   viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#0b1f3a');
 
-  // 强制 canvas 尺寸与容器同步（修复 iframe 中初始化时尺寸异常导致只渲染左上角）
+  // 修复 iframe 内尺寸异常
   function doResize(){
     try {
-      var c = document.getElementById('cesiumContainer');
-      var canvas = c && c.querySelector('canvas');
-      if (canvas && c.clientWidth > 0 && c.clientHeight > 0) {
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        var w = Math.floor(c.clientWidth);
-        var h = Math.floor(c.clientHeight);
-        if (canvas.width !== w || canvas.height !== h) {
-          canvas.width = w;
-          canvas.height = h;
-        }
-      }
+      var c=document.getElementById('cesiumContainer'); var canvas=c&&c.querySelector('canvas');
+      if(canvas&&c.clientWidth>0&&c.clientHeight>0){ canvas.style.width='100%'; canvas.style.height='100%';
+        var w=Math.floor(c.clientWidth), h=Math.floor(c.clientHeight);
+        if(canvas.width!==w||canvas.height!==h){ canvas.width=w; canvas.height=h; } }
       viewer.resize();
     } catch(e){}
   }
-  doResize();
-  [50,150,300,600,1200,2500].forEach(function(t){ setTimeout(doResize,t); });
-  if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(doResize).observe(document.getElementById('cesiumContainer'));
-  }
+  doResize(); [50,150,300,600,1200,2500].forEach(function(t){ setTimeout(doResize,t); });
+  if (typeof ResizeObserver!=='undefined') new ResizeObserver(doResize).observe(document.getElementById('cesiumContainer'));
   window.addEventListener('resize', doResize);
 
-  // 天地图（矢量底图 vec + 注记 cva），已授权域名时正常显示；失败则兜底 GeoQ → Esri ArcGIS
-  var vec = new Cesium.UrlTemplateImageryProvider({
-    url: 'https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' + TIANDITU_TOKEN,
-    subdomains:'01234567', maximumLevel:18, credit:'天地图',
-    tilingScheme:new Cesium.WebMercatorTilingScheme()
-  });
-  var cva = new Cesium.UrlTemplateImageryProvider({
-    url: 'https://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' + TIANDITU_TOKEN,
-    subdomains:'01234567', maximumLevel:18, credit:'天地图',
-    tilingScheme:new Cesium.WebMercatorTilingScheme()
-  });
-  var vecLayer = viewer.imageryLayers.addImageryProvider(vec);
-  var cvaLayer = viewer.imageryLayers.addImageryProvider(cva);
-
-  var fellBack = false;
-  function fallback(){
-    if (fellBack) return; fellBack = true;
-    try { viewer.imageryLayers.remove(vecLayer,true); viewer.imageryLayers.remove(cvaLayer,true); } catch(e){}
-    var geoq = new Cesium.UrlTemplateImageryProvider({
-      url:'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',
-      credit:'© 智图 GeoQ', maximumLevel:18 });
-    var gl = viewer.imageryLayers.addImageryProvider(geoq);
-    var f2=false;
-    gl.errorEvent.addEventListener(function(){
-      if(f2) return; f2=true;
-      try{ viewer.imageryLayers.remove(gl,true); }catch(e){}
-      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
-        url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        credit:'© Esri', maximumLevel:19 }));
-      var hud=document.getElementById('hud-right'); if(hud) hud.innerHTML='底图：Esri ArcGIS（天地图/GeoQ 兜底）｜ 行政区划：DataV（公开）';
-    });
-    var hud=document.getElementById('hud-right'); if(hud) hud.innerHTML='底图：智图 GeoQ（天地图兜底）｜ 行政区划：DataV（公开）';
+  // ===== 底图（天地图 + GeoQ/ArcGIS 兜底）=====
+  var vec=new Cesium.UrlTemplateImageryProvider({url:'https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk='+TIANDITU_TOKEN,subdomains:'01234567',maximumLevel:18,tilingScheme:new Cesium.WebMercatorTilingScheme()});
+  var cva=new Cesium.UrlTemplateImageryProvider({url:'https://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk='+TIANDITU_TOKEN,subdomains:'01234567',maximumLevel:18,tilingScheme:new Cesium.WebMercatorTilingScheme()});
+  var vecLayer=viewer.imageryLayers.addImageryProvider(vec), cvaLayer=viewer.imageryLayers.addImageryProvider(cva);
+  var fellBack=false;
+  function fallback(){ if(fellBack)return; fellBack=true;
+    try{viewer.imageryLayers.remove(vecLayer,true);viewer.imageryLayers.remove(cvaLayer,true);}catch(e){}
+    var geoq=new Cesium.UrlTemplateImageryProvider({url:'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',credit:'© 智图 GeoQ',maximumLevel:18});
+    var gl=viewer.imageryLayers.addImageryProvider(geoq); var f2=false;
+    gl.errorEvent.addEventListener(function(){ if(f2)return; f2=true; try{viewer.imageryLayers.remove(gl,true);}catch(e){}
+      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',credit:'© Esri',maximumLevel:19})); });
   }
   vecLayer.errorEvent.addEventListener(fallback);
 
-  viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(116.40, 39.92, 90000),
-    orientation:{ heading:Cesium.Math.toRadians(0), pitch:Cesium.Math.toRadians(-35), roll:0 },
-    duration:2
+  viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(116.40,39.92,90000),
+    orientation:{heading:Cesium.Math.toRadians(0),pitch:Cesium.Math.toRadians(-35),roll:0},duration:2});
+
+  // ===== 元数据 & 图层分组 =====
+  var metaMap={}, layerEnts={admin:[],road:[],building:[],pipe:[],monitor:[],sensor:[],model:[]};
+  function reg(id,meta){ metaMap[id]=meta; }
+
+  // ===== 核心点位 A/B/C =====
+  var A={id:'poiA',name:'示范园区 A',type:'poi',addr:'北京市朝阳区示范产业园 1 号',scope:'园区 3.2 km² / 42 栋建筑',
+    online:186,total:200,alarm:2,lon:116.39,lat:39.91,color:'#f59e0b'};
+  var B={id:'poiB',name:'应急指挥点 B',type:'poi',addr:'北京市海淀区应急指挥中心',scope:'城北片区 6 街道',
+    online:64,total:70,alarm:0,lon:116.45,lat:39.95,color:'#22c55e'};
+  var C={id:'poiC',name:'能源站 C',type:'poi',addr:'北京市丰台区能源保障站',scope:'城南供电网格',
+    online:38,total:45,alarm:5,lon:116.33,lat:39.88,color:'#ef4444',alarmActive:true};
+  [A,B,C].forEach(function(p){
+    reg(p.id,p);
+    var ptColor = p.alarmActive ? new Cesium.CallbackProperty(function(time){
+        var s=((time.secondsOfDay%1.2)/1.2); return Cesium.Color.RED.withAlpha(0.4+0.6*Math.abs(Math.sin(s*Math.PI)));
+      },false) : Cesium.Color.fromCssColorString(p.color);
+    viewer.entities.add({id:p.id,position:Cesium.Cartesian3.fromDegrees(p.lon,p.lat,800),
+      point:{pixelSize:14,color:ptColor,outlineColor:Cesium.Color.WHITE,outlineWidth:2},
+      label:{text:p.name,font:'14px sans-serif',fillColor:Cesium.Color.WHITE,showBackground:true,
+        backgroundColor:Cesium.Color.fromCssColorString('#0f1b2d').withAlpha(0.75),
+        pixelOffset:new Cesium.Cartesian2(0,-24),disableDepthTestDistance:Number.POSITIVE_INFINITY}});
   });
 
-  // 行政区划拉伸（DataV GeoAtlas，公开，含中国）
+  // ===== 行政区划边界（DataV 拉伸）+ 归入 admin 层 =====
   var palette=['#2563eb','#06b6d4','#7c3aed','#0ea5e9','#14b8a6','#6366f1','#0891b2','#3b82f6'];
   fetch('https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json')
     .then(function(r){return r.json();})
@@ -156,35 +271,276 @@ function initCesium(){
       geo.features.forEach(function(f){
         var name=(f.properties&&f.properties.name)||('区域'+i);
         var h=3000+(i*700)%9000;
-        var color=Cesium.Color.fromCssColorString(palette[i%palette.length]).withAlpha(0.6);
+        var color=Cesium.Color.fromCssColorString(palette[i%palette.length]).withAlpha(0.55);
         Cesium.GeoJsonDataSource.load({type:'FeatureCollection',features:[f]},
           {stroke:Cesium.Color.WHITE,fill:color,strokeWidth:1,extrudedHeight:h,clampToGround:false})
         .then(function(ds){
           viewer.dataSources.add(ds);
           ds.entities.values.forEach(function(en){
             if(en.polygon){ en.polygon.extrudedHeight=h; en.polygon.height=0; en.name=name;
-              en.label=new Cesium.LabelGraphics({text:name,font:'13px sans-serif',fillColor:Cesium.Color.WHITE,
-                style:Cesium.LabelStyle.FILL_AND_OUTLINE,outlineWidth:2,verticalOrigin:Cesium.VerticalOrigin.BOTTOM,
-                pixelOffset:new Cesium.Cartesian2(0,-8),disableDepthTestDistance:Number.POSITIVE_INFINITY}); }
+              en.label=new Cesium.LabelGraphics({text:name,font:'12px sans-serif',fillColor:Cesium.Color.WHITE,
+                verticalOrigin:Cesium.VerticalOrigin.BOTTOM,pixelOffset:new Cesium.Cartesian2(0,-8),disableDepthTestDistance:Number.POSITIVE_INFINITY});
+              layerEnts.admin.push(en); }
           });
         });
         i++;
       });
       document.getElementById('status').style.display='none';
-      document.querySelector('.hud').style.display='flex';
     })
-    .catch(function(e){ document.getElementById('status').style.display='none';
-      document.querySelector('.hud').style.display='flex';
-      console.error('GeoJSON 加载失败', e); });
+    .catch(function(e){ document.getElementById('status').style.display='none'; console.error('GeoJSON 加载失败',e); });
 
-  [ {name:'示范园区 A',lon:116.39,lat:39.91},{name:'应急指挥点 B',lon:116.45,lat:39.95},{name:'能源站 C',lon:116.33,lat:39.88} ]
-  .forEach(function(m){
-    viewer.entities.add({ position:Cesium.Cartesian3.fromDegrees(m.lon,m.lat,12000),
-      point:{pixelSize:12,color:Cesium.Color.fromCssColorString('#f59e0b'),outlineColor:Cesium.Color.WHITE,outlineWidth:2},
-      label:{text:m.name,font:'13px sans-serif',fillColor:Cesium.Color.WHITE,showBackground:true,
-        backgroundColor:Cesium.Color.fromCssColorString('#0f1b2d').withAlpha(0.7),
-        pixelOffset:new Cesium.Cartesian2(0,-22),disableDepthTestDistance:Number.POSITIVE_INFINITY} });
+  // ===== 建筑轮廓（示范园区 A 周边）=====
+  (function(){
+    var cx=A.lon, cy=A.lat, n=0;
+    for(var dx=-0.012;dx<=0.012;dx+=0.006) for(var dy=-0.01;dy<=0.01;dy+=0.005){
+      if((n++)%2) continue;
+      var h=80+Math.random()*220;
+      var e=viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(cx+dx,cy+dy,0),
+        box:{dimensions:new Cesium.Cartesian3(380,380,h),fill:true,
+          material:Cesium.Color.fromCssColorString('#06b6d4').withAlpha(0.55),outline:true,outlineColor:Cesium.Color.WHITE.withAlpha(0.4)},
+        show:true});
+      layerEnts.building.push(e);
+    }
+  })();
+
+  // ===== 路网 =====
+  (function(){
+    var roads=[
+      [[116.30,39.86],[116.40,39.91],[116.50,39.96]],
+      [[116.33,39.88],[116.45,39.95]],
+      [[116.36,39.84],[116.39,39.91],[116.42,39.99]] ];
+    roads.forEach(function(r){
+      var pos=r.map(function(p){return Cesium.Cartesian3.fromDegrees(p[0],p[1],30);});
+      var e=viewer.entities.add({polyline:{positions:pos,width:3,material:Cesium.Color.fromCssColorString('#f59e0b').withAlpha(0.85),clampToGround:true},show:false});
+      layerEnts.road.push(e);
+    });
+  })();
+
+  // ===== 地下管网（给水/电力/通信，负高程）=====
+  (function(){
+    var types=[{c:'#3b82f6',off:0},{c:'#f59e0b',off:0.004},{c:'#a855f7',off:0.008}];
+    types.forEach(function(t){
+      var pts=[];
+      for(var k=0;k<=10;k++){ var t2=k/10;
+        pts.push(Cesium.Cartesian3.fromDegrees(A.lon-0.01+t2*0.02, A.lat-0.005+t2*0.01 + t.off, -60 - (k%2)*40)); }
+      var e=viewer.entities.add({polyline:{positions:pts,width:5,
+        material:new Cesium.PolylineGlowMaterialProperty({color:Cesium.Color.fromCssColorString(t.c),glowPower:0.25}),
+        clampToGround:false},show:false});
+      layerEnts.pipe.push(e);
+    });
+  })();
+
+  // ===== 监控点位 / 传感器点位 =====
+  (function(){
+    var monitors=[[116.392,39.908,'CAM-01'],[116.46,39.952,'CAM-02'],[116.332,39.882,'CAM-03']];
+    monitors.forEach(function(m,i){
+      var id='mon'+i; reg(id,{id:id,name:m[2],type:'monitor',addr:'点位 '+m[2],scope:'实时视频流'});
+      layerEnts.monitor.push(viewer.entities.add({id:id,position:Cesium.Cartesian3.fromDegrees(m[0],m[1],300),
+        point:{pixelSize:10,color:Cesium.Color.fromCssColorString('#22c55e'),outlineColor:Cesium.Color.WHITE,outlineWidth:2},
+        label:{text:'📹',font:'14px sans-serif',pixelOffset:new Cesium.Cartesian2(0,-2),disableDepthTestDistance:Number.POSITIVE_INFINITY}}));
+    });
+    var sensors=[[116.33,39.88,'SEN-C1'],[116.335,39.885,'SEN-C2'],[116.388,39.912,'SEN-A1']];
+    sensors.forEach(function(m,i){
+      var id='sen'+i; reg(id,{id:id,name:m[2],type:'sensor',addr:'传感器 '+m[2],scope:'IoT 实时数据'});
+      layerEnts.sensor.push(viewer.entities.add({id:id,position:Cesium.Cartesian3.fromDegrees(m[0],m[1],250),
+        point:{pixelSize:10,color:Cesium.Color.fromCssColorString('#ef4444'),outlineColor:Cesium.Color.WHITE,outlineWidth:2},
+        label:{text:'◉',font:'13px sans-serif',fillColor:Cesium.Color.fromCssColorString('#ef4444'),pixelOffset:new Cesium.Cartesian2(0,-2),disableDepthTestDistance:Number.POSITIVE_INFINITY}}));
+    });
+  })();
+
+  // ===== 倾斜摄影 / 园区模型（示范园区 A）=====
+  var modelEntity=viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(A.lon,A.lat,0),
+    box:{dimensions:new Cesium.Cartesian3(900,900,520),
+      material:Cesium.Color.fromCssColorString('#eab308').withAlpha(0.7),outline:true,outlineColor:Cesium.Color.WHITE},
+    label:{text:'园区三维模型',font:'13px sans-serif',fillColor:Cesium.Color.WHITE,showBackground:true,
+      backgroundColor:Cesium.Color.fromCssColorString('#0f1b2d').withAlpha(0.75),pixelOffset:new Cesium.Cartesian2(0,-30),disableDepthTestDistance:Number.POSITIVE_INFINITY},
+    show:false});
+  layerEnts.model.push(modelEntity);
+  var modelLoaded=false, modelLite=false;
+  function setModel(lite){
+    modelLite=lite; modelLoaded=true;
+    modelEntity.show=true;
+    if(lite){ modelEntity.box.dimensions=new Cesium.Cartesian3(900,900,300);
+      modelEntity.box.material=Cesium.Color.fromCssColorString('#22c55e').withAlpha(0.7);
+      modelEntity.label.text='园区模型 · 轻量化 (面数 18,000)'; }
+    else { modelEntity.box.dimensions=new Cesium.Cartesian3(900,900,520);
+      modelEntity.box.material=Cesium.Color.fromCssColorString('#eab308').withAlpha(0.7);
+      modelEntity.label.text='园区模型 · 原始 (面数 2,400,000)'; }
+    // 同步 layer 勾选
+    var cb=document.querySelector('input[data-layer="model"]'); if(cb) cb.checked=true;
+  }
+
+  // ===== 交互：点击拾取 =====
+  var handler=new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+  handler.setInputAction(function(click){
+    var picked=viewer.scene.pick(click.position);
+    if(Cesium.defined(picked)&&picked.id&&picked.id.id){
+      var m=metaMap[picked.id.id]; if(m){ handlePick(m); return; }
+    }
+    if(measureMode) addMeasurePoint(click.position);
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+  function handlePick(m){
+    if(m.type==='poi') openPOI(m);
+    else if(m.type==='monitor') openVideo(m);
+    else if(m.type==='sensor') openSensor(m);
+  }
+
+  // ===== 右侧详情面板 =====
+  var infoEl=document.getElementById('info');
+  function openInfo(){ infoEl.classList.add('open'); }
+  document.getElementById('iClose').onclick=function(){ infoEl.classList.remove('open'); stopIoT(); };
+
+  function openPOI(p){
+    document.getElementById('iName').textContent=p.name;
+    document.getElementById('iTag').textContent='核心点位 · 分层一张图';
+    var alarmHtml = p.alarmActive ? '<div class="alarm-banner">⚠ 实时告警：设备温度异常（68℃），已触发联动预案。</div>' : '';
+    document.getElementById('iBody').innerHTML=
+      '<div class="kv"><span class="k">名称</span><span class="v">'+p.name+'</span></div>'+
+      '<div class="kv"><span class="k">地址</span><span class="v">'+p.addr+'</span></div>'+
+      '<div class="kv"><span class="k">管辖范围</span><span class="v">'+p.scope+'</span></div>'+
+      '<div class="stat"><div class="b"><div class="n">'+p.online+'/'+p.total+'</div><div class="l">设备在线</div></div>'+
+      '<div class="b"><div class="n" style="color:'+(p.alarm>0?'#b4232a':'#0f9d6b')+'">'+p.alarm+'</div><div class="l">告警数量</div></div></div>'+
+      alarmHtml+
+      '<div class="info-btns">'+
+        '<button class="btn2" id="bLoc">定位跳转</button>'+
+        '<button class="btn2" id="bPipe">查看管线</button>'+
+        '<button class="btn2" id="bModel">查看模型快照</button></div>';
+    openInfo();
+    document.getElementById('bLoc').onclick=function(){ viewer.flyTo(viewer.entities.getById(p.id),{offset:new Cesium.HeadingPitchRange(0,Cesium.Math.toRadians(-35),6000),duration:2}); };
+    document.getElementById('bPipe').onclick=function(){ setMode(true); checkLayer('pipe',true); flyTo(A); };
+    document.getElementById('bModel').onclick=function(){ if(!modelLoaded) setModel(false); else modelEntity.show=true; checkLayer('model',true); flyTo(A); };
+  }
+
+  // ===== 视频孪生 =====
+  var vt=document.getElementById('videoTwin'), vtDrag=false, vx=0, vy=0;
+  function openVideo(m){
+    vt.style.display='block';
+    var v=vt.querySelector('video'); try{ v.currentTime=0; }catch(e){}
+  }
+  document.getElementById('vtClose').onclick=function(){ vt.style.display='none'; };
+  vt.querySelector('.vt-hd').addEventListener('mousedown',function(e){ if(e.target.classList.contains('x'))return;
+    vtDrag=true; var r=vt.getBoundingClientRect(); vx=e.clientX-r.left; vy=e.clientY-r.top; });
+  window.addEventListener('mousemove',function(e){ if(!vtDrag)return;
+    vt.style.left=(e.clientX-vx)+'px'; vt.style.top=(e.clientY-vy)+'px'; vt.style.right='auto'; vt.style.bottom='auto'; });
+  window.addEventListener('mouseup',function(){ vtDrag=false; });
+
+  // ===== IoT 传感器动态数据 =====
+  var iotTimer=null, iotData=[];
+  function openSensor(m){
+    document.getElementById('iName').textContent=m.name;
+    document.getElementById('iTag').textContent='IoT 物联点位 · 模拟数据';
+    document.getElementById('iBody').innerHTML=
+      '<div class="kv"><span class="k">点位</span><span class="v">'+m.name+'</span></div>'+
+      '<div class="kv"><span class="k">地址</span><span class="v">'+m.addr+'</span></div>'+
+      '<div class="iot-row"><span>电压</span><b id="iotV">-- kV</b></div>'+
+      '<div class="iot-row"><span>温度</span><b id="iotT">-- ℃</b></div>'+
+      '<canvas class="iot-chart" id="iotChart"></canvas>'+
+      '<div class="hint">数据为模拟动态刷新（Demo 不对接真实后端）。</div>';
+    openInfo();
+    iotData=[]; for(var i=0;i<24;i++) iotData.push(20+Math.random()*8);
+    drawIoT();
+    if(iotTimer) clearInterval(iotTimer);
+    iotTimer=setInterval(function(){
+      var v=(10+Math.random()*0.8).toFixed(2), t=(64+Math.random()*8).toFixed(1);
+      var ev=document.getElementById('iotV'); if(ev) ev.textContent=v+' kV';
+      var et=document.getElementById('iotT'); if(et) et.textContent=t+' ℃';
+      iotData.push(parseFloat(t)); if(iotData.length>24) iotData.shift();
+      drawIoT();
+    },1200);
+  }
+  function stopIoT(){ if(iotTimer){ clearInterval(iotTimer); iotTimer=null; } }
+  function drawIoT(){
+    var cv=document.getElementById('iotChart'); if(!cv) return;
+    var dpr=window.devicePixelRatio||1; cv.width=cv.clientWidth*dpr; cv.height=90*dpr;
+    var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr); ctx.clearRect(0,0,cv.clientWidth,90);
+    var w=cv.clientWidth, max=80, min=55;
+    ctx.strokeStyle='#06b6d4'; ctx.lineWidth=2; ctx.beginPath();
+    iotData.forEach(function(v,i){ var x=i/(iotData.length-1)*w; var y=90-((v-min)/(max-min))*80-5;
+      i?(ctx.lineTo(x,y)):(ctx.moveTo(x,y)); });
+    ctx.stroke();
+    ctx.fillStyle='#7cc6ff'; ctx.font='11px sans-serif'; ctx.fillText('温度(℃) 实时曲线',6,14);
+  }
+
+  // ===== 飞行漫游 =====
+  function flyTo(p){ viewer.flyTo(viewer.entities.getById(p.id),{offset:new Cesium.HeadingPitchRange(0,Cesium.Math.toRadians(-35),6000),duration:2}); }
+  function flyOverview(){ viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(116.40,39.95,160000),
+    orientation:{heading:0,pitch:Cesium.Math.toRadians(-90),roll:0},duration:2.2}); }
+  document.querySelectorAll('#panel [data-fly]').forEach(function(b){
+    b.onclick=function(){ var f=b.getAttribute('data-fly');
+      if(f==='overview') flyOverview(); else if(f==='A') flyTo(A); else if(f==='C') flyTo(C); };
   });
+
+  // ===== 图层开关 =====
+  function checkLayer(name,on){ var cb=document.querySelector('input[data-layer="'+name+'"]'); if(cb) cb.checked=on; applyLayer(name,on); }
+  function applyLayer(name,on){ (layerEnts[name]||[]).forEach(function(e){ if(e&&e.show!==undefined) e.show=on; }); }
+  document.querySelectorAll('input[data-layer]').forEach(function(cb){
+    cb.onchange=function(){ applyLayer(cb.getAttribute('data-layer'),cb.checked); };
+  });
+
+  // ===== 地上 / 地下模式 =====
+  var underground=false;
+  function setMode(u){
+    underground=u;
+    viewer.scene.globe.translucency.enabled=u;
+    viewer.scene.globe.translucency.frontFaceAlpha = u?0.35:1.0;
+    document.getElementById('btnMode').textContent = u?'地下模式':'地上模式';
+    document.getElementById('btnMode').classList.toggle('on',u);
+    if(u) checkLayer('pipe',true);
+  }
+  document.getElementById('btnMode').onclick=function(){ setMode(!underground); };
+
+  // ===== 模型演示 =====
+  document.getElementById('mLoad').onclick=function(){ if(!modelLoaded) setModel(false); else {modelEntity.show=true; checkLayer('model',true);} flyTo(A); };
+  document.getElementById('mOrig').onclick=function(){ if(!modelLoaded) setModel(false); else setModel(false); flyTo(A); };
+  document.getElementById('mLite').onclick=function(){ setModel(true); flyTo(A); };
+
+  // ===== 控制面板开合 =====
+  document.getElementById('btnPanel').onclick=function(){ document.getElementById('panel').classList.toggle('open'); };
+
+  // ===== 重置视角 =====
+  document.getElementById('btnReset').onclick=function(){ flyOverview(); document.getElementById('panel').classList.remove('open'); };
+
+  // ===== 量算 =====
+  var measureMode=null, measurePts=[], measureEnts=[], measureLine=null;
+  function geodesic(c1,c2){ var g=new Cesium.EllipsoidGeodesic(Cesium.Cartographic.fromCartesian(c1),Cesium.Cartographic.fromCartesian(c2)); return g.surfaceDistance; }
+  function polyArea(cartos){ var R=6378137,rad=Cesium.Math.toRadians,total=0,n=cartos.length; if(n<3)return 0;
+    for(var i=0;i<n;i++){ var p1=cartos[i],p2=cartos[(i+1)%n];
+      total+=rad(p2.longitude-p1.longitude)*(2+Math.sin(rad(p1.latitude))+Math.sin(rad(p2.latitude))); }
+    return Math.abs(total*R*R/2); }
+  function addMeasurePoint(pos){
+    var c=viewer.scene.pickPosition(pos); if(!Cesium.defined(c)) return;
+    measurePts.push(c);
+    measureEnts.push(viewer.entities.add({position:c,point:{pixelSize:8,color:Cesium.Color.fromCssColorString('#06b6d4'),outlineColor:Cesium.Color.WHITE,outlineWidth:2}}));
+    if(measureMode==='distance'&&measurePts.length>=2){
+      var d=0; for(var i=1;i<measurePts.length;i++) d+=geodesic(measurePts[i-1],measurePts[i]);
+      updateMeasureLine(); document.getElementById('mVal').textContent='累计距离：'+(d/1000).toFixed(3)+' km（'+measurePts.length+' 点）';
+    } else if(measureMode==='area'&&measurePts.length>=3){
+      var cartos=measurePts.map(function(p){return Cesium.Cartographic.fromCartesian(p);});
+      var a=polyArea(cartos); updateMeasureLine(true);
+      document.getElementById('mVal').textContent='面积：'+(a/1000000).toFixed(4)+' km²（'+(a).toFixed(0)+' m²）';
+    }
+  }
+  function updateMeasureLine(close){
+    var pts=measurePts.slice(); if(close&&pts.length>2) pts.push(pts[0]);
+    if(measureLine) viewer.entities.remove(measureLine);
+    if(pts.length>=2) measureLine=viewer.entities.add({polyline:{positions:pts,width:3,
+      material:Cesium.Color.fromCssColorString('#06b6d4'),clampToGround:false}});
+  }
+  document.getElementById('mDist').onclick=function(){ setMeasure('distance'); };
+  document.getElementById('mArea').onclick=function(){ setMeasure('area'); };
+  function setMeasure(m){ measureMode=m; document.getElementById('mVal').textContent='已开启'+(m==='distance'?'距离':'面积')+'：点击地图加点'; }
+  document.getElementById('mFinish').onclick=function(){ measureMode=null; document.getElementById('mVal').textContent='已结束（图形保留，可继续其他操作）'; };
+  document.getElementById('mClear').onclick=function(){ measurePts=[]; if(measureLine){viewer.entities.remove(measureLine);measureLine=null;}
+    measureEnts.forEach(function(e){viewer.entities.remove(e);}); measureEnts=[]; measureMode=null;
+    document.getElementById('mVal').textContent='已清除'; };
+
+  // ===== 告警气泡（周期提示）=====
+  var toast=document.getElementById('toast');
+  function showToast(msg){ document.getElementById('toastMsg').textContent=msg; toast.style.display='block';
+    setTimeout(function(){ toast.style.display='none'; },4200); }
+  setTimeout(function(){ showToast('能源站 C：设备温度异常（68℃），已联动告警预案'); },6000);
+  setInterval(function(){ if(underground) return; showToast('能源站 C：设备温度异常（68℃），已联动告警预案'); },16000);
 }
 </script>
 </body>
