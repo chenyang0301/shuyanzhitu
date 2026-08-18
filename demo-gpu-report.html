@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>姝言智图 · 国产 GPU 兼容性测试报告（样例）</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#eef3fb;color:#0f1b2d;padding:22px}
+  .doc{max-width:960px;margin:0 auto;background:#fff;border:1px solid #e3e9f2;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(20,40,80,.08)}
+  .doc-h{padding:22px 28px;background:linear-gradient(120deg,#0f1b2d,#15324f);color:#fff}
+  .doc-h .tag{font-size:12px;color:#7cc6ff;letter-spacing:2px;font-weight:700}
+  .doc-h h1{font-size:21px;margin-top:6px}
+  .doc-h .meta{font-size:13px;color:#b9c6e0;margin-top:8px}
+  .doc-b{padding:24px 28px}
+  .doc-b h2{font-size:16px;margin:22px 0 10px;color:#15324f;border-left:4px solid #2563eb;padding-left:10px}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:6px 14px;font-size:14px;color:#5b6b82}
+  .kv b{color:#0f1b2d}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
+  th,td{border:1px solid #e3e9f2;padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:#0f1b2d;color:#fff;font-weight:600}
+  tr:nth-child(even){background:#f7f9fc}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+  .pill.pass{background:#e7f7ef;color:#0f9d6b}
+  .pill.fail{background:#fdeaea;color:#c0392b}
+  .pill.fb{background:#fdf3e2;color:#d9920a}
+  .verdict{background:#eaf1ff;border:1px solid #c9d8f5;border-radius:12px;padding:16px 18px;margin-top:12px;font-size:14.5px;line-height:1.7}
+  .verdict b{color:#2563eb}
+  .note{font-size:12px;color:#94a3b8;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc-h">
+    <div class="tag">COMPATIBILITY TEST REPORT</div>
+    <h1>国产 GPU 兼容性测试报告（样例）</h1>
+    <div class="meta">项目：园区三维一张图 Web 端 ｜ 测试环境：国产整机 + 国产显卡 ｜ 报告编号：SYS-GPU-2026-0812（示意）</div>
+  </div>
+  <div class="doc-b">
+    <h2>一、测试环境</h2>
+    <div class="kv">
+      <b>GPU</b><span>Glenfly 格兰菲 ARC 系列（自有测试机）｜ 对照组：景嘉微 JW 系列</span>
+      <b>驱动</b><span>厂商提供的最新 WHQL 驱动</span>
+      <b>CPU / OS</b><span>国产 ARM / LoongArch + 麒麟 / 统信 UOS</span>
+      <b>浏览器</b><span>Chromium 内核（国产浏览器）、Firefox ESR</span>
+      <b>引擎</b><span>Cesium 1.118（WebGL2）/ 自研 WebGL 模块</span>
+    </div>
+
+    <h2>二、测试矩阵（显卡 × 浏览器 × 现象 × 结论）</h2>
+    <table>
+      <thead><tr><th>GPU / 浏览器</th><th>现象</th><th>根因</th><th>结论</th></tr></thead>
+      <tbody>
+        <tr><td>Glenfly / Chromium</td><td>建筑白模正常，热力图层花屏</td><td>EXT_color_buffer_float 扩展缺失</td><td><span class="pill fail">异常</span> → 已降级着色器修复</td></tr>
+        <tr><td>Glenfly / Chromium</td><td>大场景切换偶发 context lost</td><td>显存带宽不足 + 未做资源释放</td><td><span class="pill fb">降级</span> → 加 fallback 后稳定</td></tr>
+        <tr><td>Glenfly / Firefox ESR</td><td>GLSL highp 精度偏差导致错位</td><td>驱动对 highp 支持不全</td><td><span class="pill fail">异常</span> → 改为 mediump 适配</td></tr>
+        <tr><td>景嘉微 JW / Chromium</td><td>地图底图正常，3D 倾斜失效</td><td>WebGL2 部分特性未实现</td><td><span class="pill fb">降级</span> → 改用 2.5D 方案</td></tr>
+        <tr><td>对照组 / 国外显卡</td><td>全部正常</td><td>—</td><td><span class="pill pass">通过</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>三、结论与建议配置</h2>
+    <div class="verdict">
+      在 <b>Glenfly 格兰菲</b> 平台上，三维系统经<b>着色器降级 + 扩展 fallback + 渲染管线调整</b>后，核心场景（底图、建筑、态势）已可稳定运行；
+      对显存敏感的大场景建议<b>降低纹理精度 / 分块加载</b>。<br>
+      在 <b>景嘉微 JW</b> 平台，建议<b>倾斜摄影改用 2.5D 表达</b>，以规避 WebGL2 特性缺口。<br>
+      最终交付以客户实际环境回归验证为准，本报告为样例模板。
+    </div>
+    <p class="note">说明：本页为《国产 GPU 兼容性测试报告》样例，用于展示交付物格式；真实数据以项目实测为准。</p>
+  </div>
+</div>
+</body>
+</html>
