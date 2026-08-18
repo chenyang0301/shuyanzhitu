@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3D 演示 Demo · 姝言智图｜园区一张图 / 应急态势大屏 / GPU 兼容性报告</title>
+<meta name="description" content="姝言智图 3D 演示：Cesium 园区一张图、应急态势大屏、GPU 兼容性测试报告，浏览器内直接预览。" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a href="index.html" class="logo"><span class="dot">姝</span> 姝言智图</a>
+      <div class="nav-links" id="nav">
+        <a href="index.html">首页</a>
+        <a href="services.html">服务内容</a>
+        <a href="demo.html" class="active">3D演示Demo</a>
+        <a href="cases.html">成功案例</a>
+        <a href="faq.html">常见问题</a>
+        <a href="contact.html">联系我们</a>
+      </div>
+      <a href="contact.html#book" class="btn sm nav-cta">预约诊断</a>
+      <button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">首页</a> / 3D 演示 Demo</div>
+    <h1>3D 演示 Demo · <span class="hl">浏览器里直接看</span></h1>
+    <p class="lead">不是效果图，是真实跑在浏览器里的三维场景。下面三个 Demo 可直接预览，点"全屏查看"可独立打开。</p>
+    <div class="demo-note" style="margin-top:18px">
+      <b>提示：</b>三维 Demo 需联网加载地图引擎与公开地图数据；在 <b>shuyanzhitu.cn</b> 域名为天地图原版底图，其他环境会自动降级到智图 GeoQ / Esri 兜底，均不影响演示。
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="demo-grid">
+
+      <div class="demo-card">
+        <div class="d-head">
+          <h3>① 园区三维"一张图"（Cesium 3D）</h3>
+          <span class="d-tag">Cesium · WebGL</span>
+        </div>
+        <div class="d-body">
+          <p>建筑 / 管网 / 态势分层叠加的园区可视化：北京行政区划拉伸 + 示范点位标注，真实三维地球引擎渲染。</p>
+        </div>
+        <iframe src="beijing-3d.html" title="园区三维一张图 Demo" loading="lazy" style="height:540px"></iframe>
+        <div class="d-foot"><a href="beijing-3d.html" target="_blank" class="btn ghost sm">全屏查看 ↗</a></div>
+      </div>
+
+      <div class="demo-card">
+        <div class="d-head">
+          <h3>② 应急态势大屏（Dashboard）</h3>
+          <span class="d-tag">Leaflet · 实时态势</span>
+        </div>
+        <div class="d-body">
+          <p>应急资源、事件热力、视频融合可视化大屏：KPI 指标卡 + 实时事件列表 + 地图态势，1920×1080 可跑网页大屏。</p>
+        </div>
+        <iframe src="demo-emergency.html" title="应急态势大屏 Demo" loading="lazy" style="height:560px"></iframe>
+        <div class="d-foot"><a href="demo-emergency.html" target="_blank" class="btn ghost sm">全屏查看 ↗</a></div>
+      </div>
+
+      <div class="demo-card">
+        <div class="d-head">
+          <h3>③ 国产 GPU 兼容性测试报告</h3>
+          <span class="d-tag">交付物样例</span>
+        </div>
+        <div class="d-body">
+          <p>GPU 故障修复的交付物模板：显卡 × 浏览器 × 现象 × 结论矩阵 + 建议配置，可作为验收与软著素材。</p>
+        </div>
+        <iframe src="demo-gpu-report.html" title="GPU 兼容性测试报告" loading="lazy" style="height:640px"></iframe>
+        <div class="d-foot"><a href="demo-gpu-report.html" target="_blank" class="btn ghost sm">全屏查看 ↗</a></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>想要贴合你场景的 Demo？</h2>
+    <p>告诉我们主题（园区 / 应急 / 能源）与要的图层，我们出一份可演示的定制样例。</p>
+    <a href="contact.html#book" class="btn white">预约免费诊断</a>
+  </div>
+</section>
+
+<footer>
+  © 2026 <b>北京姝言智图科技有限公司</b> · 国产 GPU 适配三维可视化 · 京 ICP 备 [编号] 号
+  <div style="margin-top:8px"><a href="index.html">首页</a> · <a href="services.html">服务</a> · <a href="demo.html">演示</a> · <a href="contact.html">联系</a></div>
+</footer>
+
+<script>
+  const btn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
+  btn.addEventListener('click',()=>nav.classList.toggle('open'));
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+</script>
+</body>
+</html>
