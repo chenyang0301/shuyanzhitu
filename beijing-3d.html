@@ -155,6 +155,7 @@
     <button class="btn2" id="btnCloud">本地 WebGL</button>
     <button class="btn2" id="btnNet">弱网模拟</button>
     <button class="btn2" id="btnReset">重置视角</button>
+    <button class="btn2" id="btnFull">全屏</button>
   </div>
 </div>
 
@@ -567,6 +568,18 @@ function initCesium(){
 
   // ===== 重置视角 =====
   document.getElementById('btnReset').onclick=function(){ flyOverview(); document.getElementById('panel').classList.remove('open'); };
+
+  // ===== 全屏 / 退出全屏（自管按钮，避免被顶部 HUD 遮挡 Cesium 自带按钮）=====
+  function fsEl(){ return document.documentElement; }
+  function fsActive(){ return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement); }
+  function enterFs(el){ var r=el.requestFullscreen||el.mozRequestFullScreen||el.webkitRequestFullscreen||el.msRequestFullscreen; if(r) r.call(el); }
+  function exitFs(){ var x=document.exitFullscreen||document.mozCancelFullScreen||document.webkitExitFullscreen||document.msExitFullscreen; if(x) x.call(document); }
+  function updateFsBtn(){ var on=fsActive(); var b=document.getElementById('btnFull');
+    b.textContent=on?'退出全屏':'全屏'; b.classList.toggle('on',on); setTimeout(doResize,80); }
+  document.getElementById('btnFull').onclick=function(){ fsActive()?exitFs():enterFs(fsEl()); };
+  ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(function(ev){
+    document.addEventListener(ev, updateFsBtn);
+  });
 
   // ===== 量算 =====
   var measureMode=null, measurePts=[], measureEnts=[], measureLine=null;
